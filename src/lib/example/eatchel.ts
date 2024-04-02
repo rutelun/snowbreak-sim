@@ -25,28 +25,28 @@ export function eatchelExample() {
 
   engine.timeManager.startBattle();
 
-  while (engine.timeManager.getBattleTime() < 40_000) {
-    // const needUseKaguyaSkill = !engine.modifierManager.hasModifierByName(enemy, kaguya.supportSkillModifierName) ||
-    //     !engine.modifierManager.hasModifierByName(eatchel, AmarnaSet.ballisticModifierName);
-    //
-    // if (needUseKaguyaSkill && kaguya.canUseSkill('supportSkill')) {
-    //     kaguya.useSkill('supportSkill');
-    // }
+  // while (engine.timeManager.getBattleTime() < 40_000) {
+  // const needUseKaguyaSkill = !engine.modifierManager.hasModifierByName(enemy, kaguya.supportSkillModifierName) ||
+  //     !engine.modifierManager.hasModifierByName(eatchel, AmarnaSet.ballisticModifierName);
+  //
+  // if (needUseKaguyaSkill && kaguya.canUseSkill('supportSkill')) {
+  //     kaguya.useSkill('supportSkill');
+  // }
 
-    if (eatchel.canUseSkill("ultimateSkill")) {
-      eatchel.useSkill("ultimateSkill");
-    }
-
-    while (!eatchel.canUseSkill("standardSkill")) {
-      if (eatchel.canShot()) {
-        eatchel.useShot("hip-fire");
-      } else {
-        eatchel.usePartialReload();
-      }
-    }
-
-    eatchel.useSkill("standardSkill");
+  if (eatchel.canUseSkill("ultimateSkill")) {
+    eatchel.useSkill("ultimateSkill");
   }
+
+  while (!eatchel.canUseSkill("standardSkill")) {
+    if (eatchel.canShot()) {
+      eatchel.useShot("hip-fire");
+    } else {
+      eatchel.usePartialReload();
+    }
+  }
+
+  eatchel.useSkill("standardSkill");
+  // }
 
   engine.historyManager.getPrettified();
 }

@@ -1,5 +1,10 @@
 module.exports = {
-  extends: ["airbnb-typescript", "prettier"],
+  extends: [
+    "plugin:import/recommended",
+    "plugin:react/recommended",
+    "airbnb-typescript",
+    "prettier",
+  ],
   parserOptions: {
     project: "./tsconfig.json",
   },
@@ -10,16 +15,10 @@ module.exports = {
     "class-methods-use-this": "off",
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        js: "never",
-        jsx: "never",
-        ts: "never",
-        tsx: "never",
-      },
-    ],
+    "import/extensions": "off",
   },
   ignorePatterns: [".eslintrc.js", "postcss.config.js"],
+  settings: {
+    react: { version: "18" },
+  },
 };

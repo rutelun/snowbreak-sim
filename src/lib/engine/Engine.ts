@@ -45,14 +45,14 @@ export class Engine {
   private readonly enemy: Enemy;
 
   constructor(opts: Opts = {}) {
-    this.cooldownManager = new CooldownManager(this);
     this.damageAndHealManager = new DamageAndHealManager(
       this,
       opts.damage ?? {},
     );
     this.targetManager = new TargetManager(this);
-    this.teamManager = new TeamManager(this);
     this.timeManager = new TimeManager(this);
+    this.cooldownManager = new CooldownManager(this);
+    this.teamManager = new TeamManager(this);
     this.subscriptionManager = new SubscriptionManager();
     this.abilityManager = new AbilityManager(this);
     this.attributeManager = new AttributeManager(this);
