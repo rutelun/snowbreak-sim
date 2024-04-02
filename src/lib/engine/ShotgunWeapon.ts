@@ -39,7 +39,9 @@ export abstract class ShotgunWeapon extends Weapon {
         if (!energyGain) {
           throw new Error("unknown energy gain for the rate of fire");
         }
+
         this.owner?.generateUEnergy(energyGain);
+        this.currentAmmo = Math.max(this.currentAmmo - 1, 0);
       }
     };
 

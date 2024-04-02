@@ -54,11 +54,14 @@ export class TimeManager {
   public constructor(private engine: Engine) {}
 
   private doPlannedActions(untilBattleTime: BattleTime) {
-    const maxIndex =
-      this.plannedActionQueue.findIndex(
-        (plannedAction) => plannedAction.battleTime > untilBattleTime,
-      ) - 1;
-    for (let i = 0; i <= maxIndex; i += 1) {
+    let maxIndex = this.plannedActionQueue.findIndex(
+      (plannedAction) => plannedAction.battleTime > untilBattleTime,
+    );
+    if (maxIndex === -1) {
+      maxIndex = this.plannedActionQueue.length;
+    }
+
+    for (let i = 0; i < maxIndex; i += 1) {
       const plannedAction = this.plannedActionQueue[i];
       if (!plannedAction) {
         throw new Error("no planned action");
@@ -79,7 +82,9 @@ export class TimeManager {
       }
     }
 
-    this.plannedActionQueue.splice(0, maxIndex);
+    if (maxIndex > 0) {
+      this.plannedActionQueue.splice(0, maxIndex);
+    }
   }
 
   private addPlannedActionInQueue(plannedAction: PlannedAction) {

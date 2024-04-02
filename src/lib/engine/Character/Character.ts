@@ -20,6 +20,8 @@ export abstract class Character extends CharacterWithShot {
     super(engine, opts);
     this.weapon = new DummyWeapon(this.engine);
     this.weapon.equip(this);
+
+    this.engine.teamManager.addChar(this);
   }
 
   public equipWeapon(weapon: Weapon) {

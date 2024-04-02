@@ -80,10 +80,16 @@ export class AttributeManager {
       );
     }
 
-    let result = creature.getOwnAttr(attr);
+    const aggregator = this.getAggregatorForAttr(attr);
+
+    let result = aggregator.baseValue;
+    result = aggregator.aggregator(result, creature.getOwnAttr(attr));
     if (creature instanceof Character) {
-      result += creature.weapon.getOwnAttr(attr);
-      result += creature.logistics?.getOwnAttr(attr) ?? 0;
+      result = aggregator.aggregator(result, creature.weapon.getOwnAttr(attr));
+      result = aggregator.aggregator(
+        result,
+        creature.logistics?.getOwnAttr(attr) ?? 0,
+      );
     }
 
     return result;

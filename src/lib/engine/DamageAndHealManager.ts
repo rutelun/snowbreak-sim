@@ -42,8 +42,8 @@ export class DamageAndHealManager {
     let totalDmg = 0;
     targets.forEach((target) => {
       const damageTakenMulti = this.getDamageTakenMulti(target, opts);
-      const finalDmgBuff = this.getFinalDmgPercentMulti(target, opts);
-      const dmgBuff = this.getDmgMulti(target, opts);
+      const finalDmgMulti = this.getFinalDmgMulti(target, opts);
+      const dmgMulti = this.getDmgMulti(target, opts);
       const defenseMulti = this.getDefenseMulti(target, opts);
       const critMulti = this.getCritMulti(target, opts);
       const resMulti = this.getResMulti(target, opts);
@@ -53,8 +53,8 @@ export class DamageAndHealManager {
       const targetDmg =
         initialDmg *
         critMulti *
-        dmgBuff *
-        finalDmgBuff *
+        dmgMulti *
+        finalDmgMulti *
         damageTakenMulti *
         defenseMulti *
         resMulti *
@@ -63,6 +63,7 @@ export class DamageAndHealManager {
         type: "dealDamage",
         value: targetDmg,
         target,
+        damageType: opts.damageType,
         element: opts.element,
         caster: opts.caster,
       });
@@ -146,7 +147,7 @@ export class DamageAndHealManager {
     return 1 + totalBuff + elementBuff + damageTypeBuff + mainDmgTypeBuff;
   }
 
-  private getFinalDmgPercentMulti(target: Creature, opts: DealDamageOpts) {
+  private getFinalDmgMulti(target: Creature, opts: DealDamageOpts) {
     const totalBuff = this.engine.attributeManager.getAttr(
       opts.caster,
       "finalDmg%",
@@ -198,7 +199,10 @@ export class DamageAndHealManager {
       );
     }
 
-    return totalBuff * elementBuff * damageTypeBuff * mainDmgTypeBuff;
+    return Math.max(
+      1 - totalBuff * elementBuff * damageTypeBuff * mainDmgTypeBuff,
+      0.1,
+    );
   }
 
   private getCritMulti(target: Creature, opts: DealDamageOpts) {
@@ -225,7 +229,7 @@ export class DamageAndHealManager {
   }
 
   private getDamageTakenMulti(target: Creature, _opts: DealDamageOpts) {
-    return 1 + this.engine.attributeManager.getAttr(target, "damageTaken%");
+    return this.engine.attributeManager.getAttr(target, "damageTaken%");
   }
 
   private getHealEffectMulti(target: Creature, _opts: HealOpts) {

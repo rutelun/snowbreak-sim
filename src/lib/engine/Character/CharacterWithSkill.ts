@@ -53,8 +53,8 @@ export abstract class CharacterWithSkill extends CharacterBase {
     );
   }
 
-  public isSkillOnCooldown(skillType: SkillType) {
-    return !this.engine.cooldownManager.isCooldownEnd(
+  protected isSkillCooldownEnd(skillType: SkillType) {
+    return this.engine.cooldownManager.isCooldownEnd(
       this.skillCooldownIds[skillType],
     );
   }
@@ -74,7 +74,7 @@ export abstract class CharacterWithSkill extends CharacterBase {
       return false;
     }
 
-    return this.isSkillOnCooldown(skillType);
+    return this.isSkillCooldownEnd(skillType);
   }
 
   protected abstract standardSkill(): void;

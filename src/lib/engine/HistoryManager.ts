@@ -1,12 +1,13 @@
 import type { Creature } from "./Creature";
 import type { Engine } from "./Engine";
 import type { ActionId } from "./TimeManager";
-import type { ElementType } from "./AttributeManager";
+import type { DamageType, ElementType } from "./AttributeManager";
 
 type HistoryItemDealDamage = {
   type: "dealDamage";
   value: number;
   element: ElementType;
+  damageType: DamageType;
   caster: Creature;
   target: Creature;
 };
@@ -56,8 +57,8 @@ export class HistoryManager {
   // TODO: use subscriptions
   public add(historyItem: HistoryItem) {
     this.loggedActions.push({
-      ...historyItem,
       battleTime: this.engine.timeManager.getBattleTime(),
+      ...historyItem,
     });
   }
 

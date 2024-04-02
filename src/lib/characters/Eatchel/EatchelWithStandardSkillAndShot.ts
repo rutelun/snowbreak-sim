@@ -2,7 +2,7 @@ import { EatchelBase } from "./EatchelBase";
 import type { ShotType } from "../../engine/AttributeManager";
 
 export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
-  private skillCooldown = 5;
+  private skillCooldown = 5_000;
 
   private skillDuration = 550;
 
@@ -91,6 +91,10 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
           this.gustOfPredation.flat,
       });
 
+      this.remainingStandardSkillShots = Math.max(
+        this.remainingStandardSkillShots - 1,
+        0,
+      );
       this.generateUEnergy(this.gustOfWandering.uEnergyRegen);
     };
     this.engine.timeManager.doAction({
