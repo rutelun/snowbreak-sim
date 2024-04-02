@@ -103,15 +103,20 @@ export class TimeManager {
   }
 
   public doAction(action: RegularAction) {
+    this.engine.historyManager.add({
+      type: "actionStart",
+      description: action.description,
+    });
     const currentBattleTime = this.battleTime;
-    this.doPlannedActions(Math.max(this.battleTime, this.battleTime));
+    this.doPlannedActions(
+      Math.max(this.battleTime + action.duration, this.battleTime),
+    );
 
-    action.action();
     this.battleTime = currentBattleTime + action.duration;
-
-    const afterActionBattleTime = this.battleTime;
-    this.doPlannedActions(this.battleTime);
-    this.battleTime = afterActionBattleTime;
+    action.action();
+    this.engine.historyManager.add({
+      type: "actionEnd",
+    });
   }
 
   public addPlannedAction(action: PlannedActionInit) {

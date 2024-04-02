@@ -46,6 +46,7 @@ export abstract class Weapon {
   }
 
   public onBattleStart() {
+    this.currentAmmo = this.ammoCapacity;
     this.intializedModifiers.forEach((modifier) =>
       this.engine.modifierManager.applyModifier(modifier),
     );

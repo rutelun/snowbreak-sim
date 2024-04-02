@@ -41,8 +41,9 @@ export abstract class ShotgunWeapon extends Weapon {
         }
 
         this.owner?.generateUEnergy(energyGain);
-        this.currentAmmo = Math.max(this.currentAmmo - 1, 0);
       }
+
+      this.currentAmmo = Math.max(this.currentAmmo - 1, 0);
     };
 
     this.engine.timeManager.doAction({
