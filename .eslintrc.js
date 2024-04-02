@@ -16,6 +16,7 @@ module.exports = {
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
     "import/extensions": "off",
+    "react/react-in-jsx-scope": "off",
   },
   ignorePatterns: [".eslintrc.js", "postcss.config.js"],
   settings: {

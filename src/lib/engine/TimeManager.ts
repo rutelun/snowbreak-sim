@@ -1,4 +1,5 @@
 import type { Engine } from "./Engine";
+import type { Creature } from "~/lib/engine/Creature";
 
 type BattleTime = number;
 
@@ -44,6 +45,7 @@ type RegularAction = {
   isDurationConfirmed: boolean;
   action: () => void;
   description: string;
+  caster: Creature | undefined;
 };
 
 export class TimeManager {
@@ -68,7 +70,18 @@ export class TimeManager {
       }
 
       this.battleTime = plannedAction.battleTime;
+
+      this.engine.historyManager.add({
+        type: "delayedActionStart",
+        description: plannedAction.description,
+        actionId: plannedAction.actionId,
+      });
       plannedAction.action();
+
+      this.engine.historyManager.add({
+        type: "delayedActionEnd",
+        actionId: plannedAction.actionId,
+      });
       switch (plannedAction.type) {
         case "interval":
           this.addPlannedActionInQueue({
@@ -103,16 +116,16 @@ export class TimeManager {
   }
 
   public doAction(action: RegularAction) {
-    this.engine.historyManager.add({
-      type: "actionStart",
-      description: action.description,
-    });
     const currentBattleTime = this.battleTime;
     this.doPlannedActions(
       Math.max(this.battleTime + action.duration, this.battleTime),
     );
 
     this.battleTime = currentBattleTime + action.duration;
+    this.engine.historyManager.add({
+      type: "actionStart",
+      description: action.description,
+    });
     action.action();
     this.engine.historyManager.add({
       type: "actionEnd",

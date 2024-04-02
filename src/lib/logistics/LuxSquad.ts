@@ -68,6 +68,26 @@ export class LuxSquad extends LogisticSet {
     });
     this.actionIds.add(actionId);
 
+    const onBeforeSkillUsed = ({
+      skillType,
+      caster,
+    }: Subscriptions["onBeforeSkillUsed"]) => {
+      if (caster !== this.owner) {
+        return;
+      }
+
+      if (skillType === "ultimateSkill") {
+        this.currentStacks = this.maxStacks;
+      }
+    };
+
+    this.subscriptions.add(
+      this.engine.subscriptionManager.subscribe(
+        "onBeforeSkillUsed",
+        onBeforeSkillUsed,
+      ),
+    );
+
     const onSkillUsed = ({
       skillType,
       caster,

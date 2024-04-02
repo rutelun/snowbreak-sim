@@ -50,7 +50,8 @@ export abstract class ShotgunWeapon extends Weapon {
       action: makeShot,
       duration: (60 / this.rateOfFire) * 1_000,
       isDurationConfirmed: true,
-      description: `shotgun ${type} shot`,
+      description: `Shotgun ${type} shot`,
+      caster: this.owner,
     });
   }
 
@@ -71,7 +72,8 @@ export abstract class ShotgunWeapon extends Weapon {
       },
       duration: (this.reloadSpd / this.ammoCapacity) * 1_000,
       isDurationConfirmed: true,
-      description: "partial shotgun reload",
+      description: "Partial shotgun reload",
+      caster: this.owner,
     });
   }
 

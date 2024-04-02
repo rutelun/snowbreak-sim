@@ -69,6 +69,7 @@ export class CooldownManager {
       isDurationConfirmed: true,
       description: "waiting cooldown",
       action: () => {},
+      caster: undefined,
     });
   }
 }

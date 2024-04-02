@@ -64,7 +64,8 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
       action,
       duration: this.skillDuration,
       isDurationConfirmed: false,
-      description: "Eatchel skill",
+      description: "Eatchel standard skill",
+      caster: this,
     });
   }
 
@@ -86,9 +87,9 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         damageType: "standardSkill",
         element: "kinetic",
         getValue: () =>
-          (this.gustOfPredation.hpRestoredAtkPercent / 100) *
+          (this.gustOfWandering.healthPercent / 100) *
             this.lastStandardSkillHeal +
-          this.gustOfPredation.flat,
+          this.gustOfWandering.flat,
       });
 
       this.remainingStandardSkillShots = Math.max(
@@ -102,6 +103,7 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
       description: "Eatchel skill shot",
       duration: this.skillShotDuration,
       isDurationConfirmed: false,
+      caster: this,
     });
   }
 }

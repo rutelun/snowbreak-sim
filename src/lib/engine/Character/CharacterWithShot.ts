@@ -3,7 +3,9 @@ import type { ShotType } from "../AttributeManager";
 
 export abstract class CharacterWithShot extends CharacterWithSkill {
   public useShot(shotType: ShotType) {
-    this.engine.abilityManager.useShot(shotType, () => this.shot(shotType));
+    this.engine.abilityManager.useShot(this, shotType, () =>
+      this.shot(shotType),
+    );
   }
 
   public useReload() {

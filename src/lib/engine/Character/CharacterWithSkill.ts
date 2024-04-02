@@ -43,7 +43,7 @@ export abstract class CharacterWithSkill extends CharacterBase {
       }
     };
 
-    this.engine.abilityManager.useSkill(skillType, usage);
+    this.engine.abilityManager.useSkill(this, skillType, usage);
   }
 
   protected startSkillCooldown(skillType: SkillType, duration: number) {

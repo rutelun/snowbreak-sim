@@ -8,6 +8,10 @@ export type Subscriptions = {
     value: number;
     target: Creature;
   };
+  onBeforeSkillUsed: {
+    skillType: SkillType;
+    caster: Creature;
+  };
   onSkillUsed: {
     skillType: SkillType;
     caster: Creature;
