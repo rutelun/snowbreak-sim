@@ -61,7 +61,7 @@ export class LuxSquad extends LogisticSet {
       options: {
         tickInterval: this.tickInterval,
       },
-      description: "Lux Squad Heal Stack Gain",
+      description: "Lux Squad heal stack gain",
       action: () => {
         this.currentStacks = Math.min(this.currentStacks + 1, this.maxStacks);
       },
@@ -102,7 +102,7 @@ export class LuxSquad extends LogisticSet {
 
       const locActionId = this.engine.timeManager.addPlannedAction({
         type: "once",
-        description: "Lux Squad Heal Stack Loss",
+        description: "Lux Squad heal stacks loss",
         waitingDuration: this.clearAfterUsingSkillTime,
         action: () => {
           this.currentStacks = 0;

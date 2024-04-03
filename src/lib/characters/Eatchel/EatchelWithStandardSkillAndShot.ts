@@ -2,9 +2,9 @@ import { EatchelBase } from "./EatchelBase";
 import type { ShotType } from "../../engine/AttributeManager";
 
 export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
-  private skillCooldown = 5_000;
+  private standardSkillCooldown = 5_000;
 
-  private skillDuration = 550;
+  private standardSkillDuration = 550;
 
   private skillShotDuration = 450;
 
@@ -37,7 +37,7 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         element: "kinetic",
         value: {
           type: "atkBased",
-          atkPercent: this.gustOfPredation.atkPercent,
+          percent: this.gustOfPredation.atkPercent,
           flat: this.gustOfPredation.flat,
         },
       });
@@ -50,19 +50,19 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         caster: this,
         value: {
           type: "atkBased",
-          atkPercent: this.gustOfPredation.hpRestoredAtkPercent,
+          percent: this.gustOfPredation.hpRestoredAtkPercent,
           flat: this.gustOfPredation.hpRestoredFlat,
         },
       });
 
       this.remainingStandardSkillShots = this.gustOfWandering.shots;
       this.spentSEnergy(this.energyCost.standardSkill);
-      this.startSkillCooldown("standardSkill", this.skillCooldown);
+      this.startSkillCooldown("standardSkill", this.standardSkillCooldown);
     };
 
     this.engine.timeManager.doAction({
       action,
-      duration: this.skillDuration,
+      duration: this.standardSkillDuration,
       isDurationConfirmed: false,
       description: "Eatchel standard skill",
       caster: this,

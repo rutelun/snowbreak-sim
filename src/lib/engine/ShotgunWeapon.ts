@@ -29,7 +29,7 @@ export abstract class ShotgunWeapon extends Weapon {
           caster: this.owner,
           value: {
             type: "atkBased",
-            atkPercent: this.compability,
+            percent: this.compability,
           },
         });
 

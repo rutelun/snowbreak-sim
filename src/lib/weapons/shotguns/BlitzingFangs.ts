@@ -4,6 +4,7 @@ import type { Modifier } from "../../engine/ModifierManager";
 import type { Engine } from "../../engine/Engine";
 import type { ActionId } from "../../engine/TimeManager";
 import type { ElementType } from "../../engine/AttributeManager";
+import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
 
 type Opts = {
   tier: 1 | 2;
@@ -36,7 +37,8 @@ export class BlitzingFangs extends ShotgunWeapon {
       target: "team",
       attr: "atkFlat",
       getValue: () =>
-        (this.values.flatAtkFromStoredHealth[this.tier - 1] / 100) *
+        (getValueByWeaponTier(this.values.flatAtkFromStoredHealth, this.tier) /
+          100) *
         this.storedHealth,
     },
     {
@@ -45,7 +47,8 @@ export class BlitzingFangs extends ShotgunWeapon {
       unique: true,
       target: "creator",
       attr: "healBonus%",
-      getValue: () => this.values.healingAndUltimateEffect[this.tier - 1],
+      getValue: () =>
+        getValueByWeaponTier(this.values.healingAndUltimateEffect, this.tier),
     },
     {
       name: "Blessing of Wind Ult Dmg",
@@ -53,7 +56,8 @@ export class BlitzingFangs extends ShotgunWeapon {
       unique: true,
       target: "creator",
       attr: "ultimateSkillDmg%",
-      getValue: () => this.values.healingAndUltimateEffect[this.tier - 1],
+      getValue: () =>
+        getValueByWeaponTier(this.values.healingAndUltimateEffect, this.tier),
     },
   ];
 

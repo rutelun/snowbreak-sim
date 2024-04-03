@@ -5,13 +5,23 @@ import type { DamageType, ElementType } from "./AttributeManager";
 import { SHOT_TYPES, SKILL_TYPES } from "./AttributeManager";
 import { inArray } from "../utils/includes";
 
-type HealOrDamageValue = {
+type HealOrDamageValueFromAtk = {
   type: "atkBased";
-  atkPercent?: number;
+  percent?: number;
   flat?: number;
 };
+
+type HealOrDamageValueFromHp = {
+  type: "hpBased";
+  percent?: number;
+  flat?: number;
+};
+
+export type DamageOrHealValue =
+  | HealOrDamageValueFromAtk
+  | HealOrDamageValueFromHp;
 type HealOrDamageOpts =
-  | { value: HealOrDamageValue }
+  | { value: DamageOrHealValue }
   | { getValue: () => number };
 
 type HealOpts = {
@@ -112,7 +122,14 @@ export class DamageAndHealManager {
       case "atkBased":
         return (
           (this.engine.attributeManager.getAttr(opts.caster, "totalAtk") *
-            (opts.value.atkPercent ?? 0)) /
+            (opts.value.percent ?? 0)) /
+            100 +
+          (opts.value.flat ?? 0)
+        );
+      case "hpBased":
+        return (
+          (this.engine.attributeManager.getAttr(opts.caster, "totalHp") *
+            (opts.value.percent ?? 0)) /
             100 +
           (opts.value.flat ?? 0)
         );

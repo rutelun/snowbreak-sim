@@ -1,9 +1,10 @@
 import type { Engine } from "../Engine";
 import type { CharacterOpts } from ".";
 import { Creature } from "../Creature";
-import type { Attribute } from "../AttributeManager";
+import type { Attribute, SkillType } from "../AttributeManager";
 import type { Weapon } from "../Weapon";
 import type { WeaponType } from "../types";
+import type { SkillLvl } from "~/lib/utils/getSkillValueByLevel";
 
 export type Manifestation = 0 | 1 | 2 | 3 | 4 | 5;
 export abstract class CharacterBase extends Creature {
@@ -16,6 +17,12 @@ export abstract class CharacterBase extends Creature {
   public abstract weapon: Weapon;
 
   public abstract readonly weaponType: WeaponType;
+
+  public skillLevel: Record<SkillType, SkillLvl> = {
+    standardSkill: 0,
+    ultimateSkill: 0,
+    supportSkill: 0,
+  };
 
   public constructor(engine: Engine, opts: CharacterOpts) {
     super(engine);
