@@ -72,6 +72,7 @@ export class BlitzingFangs extends ShotgunWeapon {
     this.loadoutAttrs = {
       atkBase: 789,
       "atk%": 50,
+      "critDmg%": 30,
     };
   }
 
@@ -88,7 +89,7 @@ export class BlitzingFangs extends ShotgunWeapon {
           return;
         }
 
-        this.storedHealth = Math.max(
+        this.storedHealth = Math.min(
           this.storedHealth + value,
           this.values.maxStoredHealth,
         );

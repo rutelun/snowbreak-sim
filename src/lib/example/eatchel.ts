@@ -19,7 +19,7 @@ export function eatchelExample() {
     new LuxSquad(engine, [
       { skillHaste: 19.3, aligmentIndex: 106, "healBonus%": 10.6 },
       { skillHaste: 19.3, aligmentIndex: 106, "healBonus%": 10.6 },
-      { skillHaste: 19.3, aligmentIndex: 106, "healBonus%": 10.6 },
+      { skillHaste: 19.3, aligmentIndex: 106, "kineticDmg%": 8.5 },
     ]),
   );
 

@@ -1,9 +1,10 @@
 import type { Creature } from "./Creature";
 import type { TargetOptions } from "./TargetManager";
 import type { Engine } from "./Engine";
-import type { DamageType, ElementType } from "./AttributeManager";
+import type { Attribute, DamageType, ElementType } from "./AttributeManager";
 import { SHOT_TYPES, SKILL_TYPES } from "./AttributeManager";
 import { inArray } from "../utils/includes";
+import { Formula } from "~/lib/engine/Formula";
 
 type HealOrDamageValueFromAtk = {
   type: "atkBased";
@@ -22,7 +23,7 @@ export type DamageOrHealValue =
   | HealOrDamageValueFromHp;
 type HealOrDamageOpts =
   | { value: DamageOrHealValue }
-  | { getValue: () => number };
+  | { getValue: () => Formula };
 
 type HealOpts = {
   targetOptions: TargetOptions;
@@ -60,25 +61,36 @@ export class DamageAndHealManager {
       const shieldMulti = this.getShieldMulti(target, opts);
       const initialDmg = this.getInitialValue(opts);
 
-      const targetDmg =
-        initialDmg *
-        critMulti *
-        dmgMulti *
-        finalDmgMulti *
-        damageTakenMulti *
-        defenseMulti *
-        resMulti *
-        shieldMulti;
+      const formula = new Formula({
+        action: "*",
+        parts: [
+          initialDmg,
+          critMulti,
+          dmgMulti,
+          finalDmgMulti,
+          damageTakenMulti,
+          defenseMulti,
+          resMulti,
+          shieldMulti,
+        ],
+        description: "damage dealt",
+      });
+
+      console.log(formula);
+
+      const dmg = formula.calc();
+
       this.engine.historyManager.add({
         type: "dealDamage",
-        value: targetDmg,
+        value: dmg,
         target,
         damageType: opts.damageType,
         element: opts.element,
         caster: opts.caster,
+        formula,
       });
 
-      totalDmg += targetDmg;
+      totalDmg += dmg;
     });
 
     return totalDmg;
@@ -91,7 +103,13 @@ export class DamageAndHealManager {
       const initialHeal = this.getInitialValue(opts);
       const healEffectMulti = this.getHealEffectMulti(target, opts);
 
-      const targetHeal = initialHeal * healEffectMulti;
+      const formula = new Formula({
+        action: "*",
+        parts: [initialHeal, healEffectMulti],
+        description: "heal",
+      });
+
+      const targetHeal = formula.calc();
 
       this.engine.subscriptionManager.trigger("onHeal", {
         value: targetHeal,
@@ -111,150 +129,255 @@ export class DamageAndHealManager {
     return totalHeal;
   }
 
+  // todo: remove
   private getInitialValue(
     opts: HealOrDamageOpts & { caster: Creature },
-  ): number {
+  ): Formula {
     if ("getValue" in opts) {
       return opts.getValue();
     }
 
-    switch (opts.value.type) {
-      case "atkBased":
-        return (
-          (this.engine.attributeManager.getAttr(opts.caster, "totalAtk") *
-            (opts.value.percent ?? 0)) /
-            100 +
-          (opts.value.flat ?? 0)
-        );
-      case "hpBased":
-        return (
-          (this.engine.attributeManager.getAttr(opts.caster, "totalHp") *
-            (opts.value.percent ?? 0)) /
-            100 +
-          (opts.value.flat ?? 0)
-        );
-      default:
-        throw new Error("unsupported type of dmg calc");
-    }
+    const getAttributeByType = (type: DamageOrHealValue["type"]): Attribute => {
+      switch (type) {
+        case "atkBased":
+          return "totalAtk";
+        case "hpBased":
+          return "totalHp";
+      }
+    };
+
+    return new Formula({
+      action: "+",
+      parts: [
+        new Formula({
+          description: undefined,
+          action: "*",
+          parts: [
+            { value: (opts.value.percent ?? 0) / 100, description: undefined },
+            this.engine.attributeManager.getAttrFormula(
+              opts.caster,
+              getAttributeByType(opts.value.type),
+            ),
+          ],
+        }),
+        { value: opts.value.flat ?? 0, description: undefined },
+      ],
+      description: "damage",
+    });
   }
 
-  private getDmgMulti(target: Creature, opts: DealDamageOpts) {
-    const totalBuff = this.engine.attributeManager.getAttr(opts.caster, "dmg%");
-    const elementBuff = this.engine.attributeManager.getAttr(
+  private getDmgMulti(target: Creature, opts: DealDamageOpts): Formula {
+    const totalBuff = this.engine.attributeManager.getAttrFormula(
+      opts.caster,
+      "dmg%",
+    );
+    const elementBuff = this.engine.attributeManager.getAttrFormula(
       opts.caster,
       `${opts.element}Dmg%`,
     );
-    const damageTypeBuff = this.engine.attributeManager.getAttr(
+    const damageTypeBuff = this.engine.attributeManager.getAttrFormula(
       opts.caster,
       `${opts.damageType}Dmg%`,
     );
-    let mainDmgTypeBuff = 0;
+    let mainDmgTypeBuff = new Formula({
+      baseResult: 0,
+      parts: [],
+      action: "*",
+      description: undefined,
+    });
     if (inArray(SKILL_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgTypeBuff = this.engine.attributeManager.getAttrFormula(
         opts.caster,
         "skillDmg%",
       );
     } else if (inArray(SHOT_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgTypeBuff = this.engine.attributeManager.getAttrFormula(
         opts.caster,
         "ballisticDmg%",
       );
     }
 
-    return 1 + totalBuff + elementBuff + damageTypeBuff + mainDmgTypeBuff;
+    return new Formula({
+      description: "Damage multiplier",
+      action: "+",
+      parts: [
+        { value: 1, description: undefined },
+        totalBuff,
+        elementBuff,
+        damageTypeBuff,
+        mainDmgTypeBuff,
+      ],
+    });
   }
 
-  private getFinalDmgMulti(target: Creature, opts: DealDamageOpts) {
-    const totalBuff = this.engine.attributeManager.getAttr(
+  private getFinalDmgMulti(target: Creature, opts: DealDamageOpts): Formula {
+    const totalBuff = this.engine.attributeManager.getAttrFormula(
       opts.caster,
       "finalDmg%",
     );
-    const elementBuff = this.engine.attributeManager.getAttr(
+    const elementBuff = this.engine.attributeManager.getAttrFormula(
       opts.caster,
       `${opts.element}FinalDmg%`,
     );
-    const damageTypeBuff = this.engine.attributeManager.getAttr(
+    const damageTypeBuff = this.engine.attributeManager.getAttrFormula(
       opts.caster,
       `${opts.damageType}FinalDmg%`,
     );
-    let mainDmgTypeBuff = 1;
+    let mainDmgTypeBuff: Formula = new Formula({
+      baseResult: 1,
+      parts: [],
+      action: "*",
+      description: undefined,
+    });
+
     if (inArray(SKILL_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgTypeBuff = this.engine.attributeManager.getAttrFormula(
         opts.caster,
         "skillFinalDmg%",
       );
     } else if (inArray(SHOT_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgTypeBuff = this.engine.attributeManager.getAttrFormula(
         opts.caster,
         "ballisticFinalDmg%",
       );
     }
 
-    return totalBuff * elementBuff * damageTypeBuff * mainDmgTypeBuff;
+    return new Formula({
+      action: "*",
+      parts: [totalBuff, elementBuff, damageTypeBuff, mainDmgTypeBuff],
+      description: "final damage multiplier",
+    });
   }
 
-  private getResMulti(target: Creature, opts: DealDamageOpts) {
-    const totalBuff = this.engine.attributeManager.getAttr(target, "res%");
-    const elementBuff = this.engine.attributeManager.getAttr(
+  private getResMulti(target: Creature, opts: DealDamageOpts): Formula {
+    const total = this.engine.attributeManager.getAttrFormula(target, "res%");
+    const element = this.engine.attributeManager.getAttrFormula(
       target,
       `${opts.element}Res%`,
     );
-    const damageTypeBuff = this.engine.attributeManager.getAttr(
+    const damageType = this.engine.attributeManager.getAttrFormula(
       target,
       `${opts.damageType}Res%`,
     );
-    let mainDmgTypeBuff = 1;
+    let mainDmgType: Formula;
     if (inArray(SKILL_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgType = this.engine.attributeManager.getAttrFormula(
         target,
         "skillRes%",
       );
     } else if (inArray(SHOT_TYPES, opts.damageType)) {
-      mainDmgTypeBuff = this.engine.attributeManager.getAttr(
+      mainDmgType = this.engine.attributeManager.getAttrFormula(
         target,
         "ballisticRes%",
       );
+    } else {
+      mainDmgType = new Formula({
+        baseResult: 1,
+        parts: [],
+        action: "*",
+        description: undefined,
+      });
     }
 
-    return Math.max(
-      1 - totalBuff * elementBuff * damageTypeBuff * mainDmgTypeBuff,
-      0.1,
-    );
+    return new Formula({
+      description: "resistance multiplier",
+      action: "*",
+      parts: [total, element, damageType, mainDmgType].map(
+        (part) =>
+          new Formula({
+            action: "-",
+            description: undefined,
+            parts: [{ value: 1, description: undefined }, part],
+          }),
+      ),
+    });
   }
 
-  private getCritMulti(target: Creature, opts: DealDamageOpts) {
+  private getCritMulti(target: Creature, opts: DealDamageOpts): Formula {
     if (opts.forceCanCrit === false || inArray(SKILL_TYPES, opts.damageType)) {
-      return 1;
+      return new Formula({
+        action: "*",
+        parts: [],
+        baseResult: 1,
+        baseResultVisible: false,
+        description: "crit multiplier(can't crit)",
+      });
     }
 
     const critRate = this.opts.alwaysHitWeakPoint
-      ? 100
-      : this.engine.attributeManager.getAttr(opts.caster, "critRate");
+      ? new Formula({
+          action: "*",
+          parts: [],
+          baseResult: 1,
+          visibleAsPercent: true,
+          description: "critRate",
+        })
+      : this.engine.attributeManager.getAttrFormula(opts.caster, "critRate");
 
-    return (
-      1 +
-      critRate * this.engine.attributeManager.getAttr(opts.caster, "critDmg%")
-    );
+    return new Formula({
+      action: "+",
+      description: "crit multiplier",
+      parts: [
+        { value: 1, description: undefined },
+        new Formula({
+          action: "*",
+          description: undefined,
+          parts: [
+            critRate,
+            this.engine.attributeManager.getAttrFormula(
+              opts.caster,
+              "critDmg%",
+            ),
+          ],
+        }),
+      ],
+    });
   }
 
-  private getShieldMulti(target: Creature, opts: DealDamageOpts) {
+  private getShieldMulti(target: Creature, opts: DealDamageOpts): Formula {
+    let shieldMulti: number;
     if (target.hasShield() && inArray(SHOT_TYPES, opts.damageType)) {
-      return 2;
+      shieldMulti = 2;
+    } else {
+      shieldMulti = 1;
     }
 
-    return 1;
+    return new Formula({
+      action: "*",
+      parts: [{ value: shieldMulti, description: undefined }],
+      baseResult: 1,
+      baseResultVisible: true,
+      description: "shield multiplier",
+    });
   }
 
-  private getDamageTakenMulti(target: Creature, _opts: DealDamageOpts) {
-    return this.engine.attributeManager.getAttr(target, "damageTaken%");
+  private getDamageTakenMulti(
+    target: Creature,
+    _opts: DealDamageOpts,
+  ): Formula {
+    return this.engine.attributeManager.getAttrFormula(target, "damageTaken%");
   }
 
-  private getHealEffectMulti(target: Creature, _opts: HealOpts) {
-    return 1 + this.engine.attributeManager.getAttr(target, "healBonus%");
+  private getHealEffectMulti(target: Creature, _opts: HealOpts): Formula {
+    return new Formula({
+      action: "+",
+      parts: [
+        { value: 1, description: undefined },
+        this.engine.attributeManager.getAttrFormula(target, "healBonus%"),
+      ],
+      description: "heal effect multiplier",
+      baseResult: 1,
+      baseResultVisible: true,
+    });
   }
 
   private getDefenseMulti(_target: Creature, _opts: DealDamageOpts) {
-    // TODO:
-    return 0.5;
+    return new Formula({
+      action: "*",
+      parts: [],
+      baseResult: 0.5,
+      baseResultVisible: true,
+      description: "defense multiplier",
+    });
   }
 }

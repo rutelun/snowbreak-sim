@@ -1,5 +1,6 @@
 import { EatchelBase } from "./EatchelBase";
 import type { ShotType } from "../../engine/AttributeManager";
+import { Formula } from "~/lib/engine/Formula";
 
 export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
   private standardSkillCooldown = 5_000;
@@ -87,9 +88,28 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         damageType: "standardSkill",
         element: "kinetic",
         getValue: () =>
-          (this.gustOfWandering.healthPercent / 100) *
-            this.lastStandardSkillHeal +
-          this.gustOfWandering.flat,
+          new Formula({
+            action: "+",
+            description: "gust of wandering damage",
+            parts: [
+              new Formula({
+                action: "*",
+                description: undefined,
+                parts: [
+                  {
+                    value: this.gustOfWandering.healthPercent / 100,
+                    visibleAsPercent: true,
+                    description: "gust of wandering scale",
+                  },
+                  {
+                    value: this.lastStandardSkillHeal,
+                    description: "last stored standard skill heal",
+                  },
+                ],
+              }),
+              { value: this.gustOfWandering.flat, description: undefined },
+            ],
+          }),
       });
 
       this.remainingStandardSkillShots = Math.max(

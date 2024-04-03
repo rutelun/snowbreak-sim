@@ -24,6 +24,8 @@ export class Eatchel extends EatchelWithUltimateSkill {
         );
       },
     });
+
+    this.engine.modifierManager.applyModifier(this.deiwosModifier);
   }
 
   public override destroy() {

@@ -147,6 +147,8 @@ export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
       },
     );
 
+    this.engine.modifierManager.applyModifier(this.ultimateModifier);
+
     this.engine.uEnergyManager.spent(currentEnergy);
     this.startSkillCooldown("ultimateSkill", this.ultimateSkillCooldown);
   }

@@ -2,8 +2,16 @@ import type { Creature } from "./Creature";
 import type { Engine } from "./Engine";
 import type { TargetOptions } from "./TargetManager";
 import type { ActionId } from "./TimeManager";
-import type { Attribute, AttributeAggregator } from "./AttributeManager";
+import type {
+  Attribute,
+  AttributeAggregator,
+  AttributeDistribution,
+  AttributeWithDistribution,
+  FormulaAggregator,
+  TotalAttribute,
+} from "./AttributeManager";
 import type { SimpleTargetType } from "./types";
+import type { SimpleFormulaPart } from "~/lib/engine/Formula";
 
 export type ModifierId = Symbol;
 
@@ -104,6 +112,20 @@ export class ModifierManager {
     return !!this.getModifierByName(creature, modifierName);
   }
 
+  private calcModifierValue(
+    owner: Creature,
+    modifier: InitializedModifier,
+  ): number {
+    if ("value" in modifier) {
+      return modifier.value;
+    }
+
+    return modifier.getValue({
+      owner,
+      creator: modifier.creator,
+    });
+  }
+
   public calcAttr(
     creature: Creature,
     attr: Attribute,
@@ -112,19 +134,63 @@ export class ModifierManager {
     let result = aggregator.baseValue;
     this.modifiers.get(creature)?.forEach((modifier) => {
       if (modifier.attr === attr) {
-        const value =
-          "value" in modifier
-            ? modifier.value
-            : modifier.getValue({
-                owner: creature,
-                creator: modifier.creator,
-              });
-
-        result = aggregator.aggregator(result, value);
+        result = aggregator.aggregator(
+          result,
+          this.calcModifierValue(creature, modifier),
+        );
       }
     });
 
     return result;
+  }
+
+  public getAttrFormulaParts(
+    creature: Creature,
+    attr: Attribute,
+  ): SimpleFormulaPart[] {
+    let parts: SimpleFormulaPart[] = [];
+    this.modifiers.get(creature)?.forEach((modifier) => {
+      if (modifier.attr === attr) {
+        const value = this.calcModifierValue(creature, modifier);
+        if (value !== 0) {
+          parts.push({
+            value,
+            description: modifier.name,
+          });
+        }
+      }
+    });
+
+    return parts;
+  }
+
+  public calcAttrWithDistribution(
+    creature: Creature,
+    attr: Exclude<Attribute, TotalAttribute>,
+    aggregator: AttributeAggregator,
+  ): AttributeWithDistribution {
+    let totalValue = aggregator.baseValue;
+    let distribution: AttributeDistribution[] = [];
+
+    this.modifiers.get(creature)?.forEach((modifier) => {
+      if (modifier.attr === attr) {
+        const value = this.calcModifierValue(creature, modifier);
+        totalValue = aggregator.aggregator(totalValue, value);
+
+        if (value !== 0) {
+          distribution.push({
+            value,
+            description: modifier.name,
+          });
+        }
+      }
+    });
+
+    return {
+      value: totalValue,
+      attr,
+      valueDistribution: distribution,
+    };
   }
 
   public initializeModifier(
