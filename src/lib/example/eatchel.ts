@@ -33,9 +33,9 @@ export function eatchelExample() {
     //     kaguya.useSkill('supportSkill');
     // }
 
-    // if (eatchel.canUseSkill("ultimateSkill")) {
-    // eatchel.useSkill("ultimateSkill");
-    // }
+    if (eatchel.canUseSkill("ultimateSkill")) {
+      eatchel.useSkill("ultimateSkill");
+    }
 
     while (!eatchel.canUseSkill("standardSkill")) {
       if (eatchel.canShot()) {
