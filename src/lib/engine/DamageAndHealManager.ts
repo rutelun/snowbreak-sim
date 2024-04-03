@@ -153,7 +153,11 @@ export class DamageAndHealManager {
           description: undefined,
           action: "*",
           parts: [
-            { value: (opts.value.percent ?? 0) / 100, description: undefined },
+            {
+              value: (opts.value.percent ?? 0) / 100,
+              description: undefined,
+              visibleAsPercent: true,
+            },
             this.engine.attributeManager.getAttrFormula(
               opts.caster,
               getAttributeByType(opts.value.type),

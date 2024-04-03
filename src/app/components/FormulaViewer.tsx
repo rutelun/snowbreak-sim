@@ -24,24 +24,40 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
   return (
     <>
       {showSummarize ? (
-        <>
-          <Text color="gray.800" as="span">
-            {resultValue}
-          </Text>
-          (
-          <Text
-            color="blue.800"
-            as="span"
-            borderBottomStyle="dashed"
-            borderBottomWidth={2}
-            onClick={() => {
-              setIsDetailsVisible((val) => !val);
-            }}
-          >
-            {formula.description}
-          </Text>
-          )
-        </>
+        deep === 0 ? (
+          <>
+            <Text
+              color="blue.800"
+              as="span"
+              borderBottomStyle="dashed"
+              borderBottomWidth={2}
+              onClick={() => {
+                setIsDetailsVisible((val) => !val);
+              }}
+            >
+              {formula.description}: {resultValue}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text color="gray.800" as="span">
+              {resultValue}
+            </Text>
+            (
+            <Text
+              color="blue.800"
+              as="span"
+              borderBottomStyle="dashed"
+              borderBottomWidth={2}
+              onClick={() => {
+                setIsDetailsVisible((val) => !val);
+              }}
+            >
+              {formula.description}
+            </Text>
+            )
+          </>
+        )
       ) : (
         ""
       )}
@@ -56,12 +72,10 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
           <>
             {part instanceof Formula ? (
               <>
-                {isLowerPriority(formula.action, part.action) ? "(" : ""}
                 <FormulaViewer
                   formula={part}
                   deep={part.description ? deep + 1 : deep}
                 />
-                {isLowerPriority(formula.action, part.action) ? ")" : ""}
               </>
             ) : (
               <>

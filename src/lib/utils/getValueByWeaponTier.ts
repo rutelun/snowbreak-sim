@@ -8,6 +8,6 @@ export function getValueByWeaponTier(
     return possibleValues as number;
   }
 
-  const index = Math.min(tier - 1, possibleValues.length - 2);
+  const index = Math.min(tier - 1, possibleValues.length - 1);
   return possibleValues[index];
 }
