@@ -3,7 +3,6 @@ import type { ActionId } from "~/lib/engine/TimeManager";
 import { LittleSunshineBase } from "~/lib/characters/LittleSunshine/LittleSunshineBase";
 import { inArray } from "~/lib/utils/includes";
 import { SHOT_TYPES } from "~/lib/engine/AttributeManager";
-import type { Subscriptions } from "~/lib/engine/SubscriptionManager";
 
 export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase {
   private supportSkillCooldown = 25_000;
