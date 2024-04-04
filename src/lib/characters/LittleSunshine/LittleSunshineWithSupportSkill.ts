@@ -23,9 +23,9 @@ export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase 
   private burningDmgInterval = 500;
   private burningDmgDuration = 5_000;
 
-  private burningDmgAction: ActionId | undefined = undefined;
+  private knockUpAtk = 100;
 
-  private reloadSubscription: Subscriptions | undefined = undefined;
+  private burningDmgAction: ActionId | undefined = undefined;
 
   public override onBattleStart() {
     super.onBattleStart();
@@ -40,6 +40,18 @@ export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase 
       value: {
         type: "atkBased",
         percent: this.burningDmgPercent,
+      },
+    });
+  }
+  private supportSkillKnockUpDamage() {
+    this.engine.damageAndHealManager.dealDamage({
+      targetOptions: { targetType: "enemy" },
+      element: this.element,
+      caster: this,
+      damageType: "supportSkill",
+      value: {
+        type: "atkBased",
+        percent: this.knockUpAtk,
       },
     });
   }
@@ -83,31 +95,31 @@ export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase 
       effect: "burning",
       duration: this.burningDmgDuration,
     });
-
-    if (
-      this.burningDmgAction &&
-      this.engine.timeManager.hasActionInQueue(this.burningDmgAction)
-    ) {
-      this.engine.timeManager.changeRemainingDuration(
-        this.burningDmgAction,
-        this.burningDmgDuration,
-      );
-    } else {
-      this.burningDmgAction = this.engine.timeManager.addPlannedAction({
-        type: "interval",
-        options: {
-          tickInterval: this.burningDmgInterval,
-          duration: this.burningDmgDuration,
-        },
-        description: "Little Sunshine burning",
-        action: () => this.burningSupportSkillDamage(),
-      });
-    }
   }
 
   protected supportSkill() {
     this.engine.timeManager.doAction({
       action: () => {
+        this.supportSkillKnockUpDamage();
+        if (
+          this.burningDmgAction &&
+          this.engine.timeManager.hasActionInQueue(this.burningDmgAction)
+        ) {
+          this.engine.timeManager.changeRemainingDuration(
+            this.burningDmgAction,
+            this.burningDmgDuration,
+          );
+        } else {
+          this.burningDmgAction = this.engine.timeManager.addPlannedAction({
+            type: "interval",
+            options: {
+              tickInterval: this.burningDmgInterval,
+              duration: this.burningDmgDuration,
+            },
+            description: "Little Sunshine burning",
+            action: () => this.burningSupportSkillDamage(),
+          });
+        }
         const dealDamageSubscription =
           this.engine.subscriptionManager.temporarySubscribe({
             type: "onDamageDealt",
