@@ -15,6 +15,10 @@ export abstract class CharacterBase extends Creature {
   public manifestation: Manifestation;
 
   protected abstract readonly loadoutAttrs: { [attr in Attribute]?: number };
+  protected attrsPerManifestation: { [attr in Attribute]?: number } = {
+    "hp%": 2,
+    "atk%": 2,
+  };
 
   public abstract weapon: Weapon;
 
@@ -38,4 +42,10 @@ export abstract class CharacterBase extends Creature {
   public onBattleStart(): void {}
 
   public destroy(): void {}
+  public override getOwnAttr(attr: Attribute): number {
+    return (
+      super.getOwnAttr(attr) +
+      this.manifestation * (this.attrsPerManifestation[attr] ?? 0)
+    );
+  }
 }

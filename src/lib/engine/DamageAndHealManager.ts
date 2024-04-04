@@ -5,6 +5,7 @@ import type { Attribute, DamageType, ElementType } from "./AttributeManager";
 import { SHOT_TYPES, SKILL_TYPES } from "./AttributeManager";
 import { inArray } from "../utils/includes";
 import { Formula } from "~/lib/engine/Formula";
+import type { InitializedModifier } from "~/lib/engine/ModifierManager";
 
 type HealOrDamageValueFromAtk = {
   type: "atkBased";
@@ -28,6 +29,7 @@ type HealOrDamageOpts =
 type HealOpts = {
   targetOptions: TargetOptions;
   caster: Creature;
+  instanceOnlyModifiers?: InitializedModifier[];
 } & HealOrDamageOpts;
 
 type DealDamageOpts = {
@@ -36,6 +38,7 @@ type DealDamageOpts = {
   damageType: DamageType;
   element: ElementType;
   forceCanCrit?: boolean;
+  instanceOnlyModifiers?: InitializedModifier[];
 } & HealOrDamageOpts;
 
 export type DamageAndHealManagerOpts = {
@@ -52,6 +55,9 @@ export class DamageAndHealManager {
     const targets = this.engine.targetManager.getTargets(opts.targetOptions);
     let totalDmg = 0;
     targets.forEach((target) => {
+      opts.instanceOnlyModifiers?.map((mod) =>
+        this.engine.modifierManager.applyModifier(mod),
+      );
       const damageTakenMulti = this.getDamageTakenMulti(target, opts);
       const finalDmgMulti = this.getFinalDmgMulti(target, opts);
       const dmgMulti = this.getDmgMulti(target, opts);
@@ -88,6 +94,10 @@ export class DamageAndHealManager {
         formula,
       });
 
+      opts.instanceOnlyModifiers?.map((mod) =>
+        this.engine.modifierManager.removeModifier(mod.id),
+      );
+
       this.engine.subscriptionManager.trigger("onDamageDealt", {
         value: dmg,
         target,
@@ -108,6 +118,9 @@ export class DamageAndHealManager {
     const targets = this.engine.targetManager.getTargets(opts.targetOptions);
     let totalHeal = 0;
     targets.forEach((target) => {
+      opts.instanceOnlyModifiers?.map((mod) =>
+        this.engine.modifierManager.applyModifier(mod),
+      );
       const initialHeal = this.getInitialValue(opts);
       const healEffectMulti = this.getHealEffectMulti(target, opts);
 
@@ -119,16 +132,20 @@ export class DamageAndHealManager {
 
       const targetHeal = formula.calc();
 
-      this.engine.subscriptionManager.trigger("onHeal", {
-        value: targetHeal,
-        target,
-      });
-
       this.engine.historyManager.add({
         type: "heal",
         value: targetHeal,
         target,
         caster: opts.caster,
+      });
+
+      opts.instanceOnlyModifiers?.map((mod) =>
+        this.engine.modifierManager.removeModifier(mod.id),
+      );
+
+      this.engine.subscriptionManager.trigger("onHeal", {
+        value: targetHeal,
+        target,
       });
 
       totalHeal += targetHeal;

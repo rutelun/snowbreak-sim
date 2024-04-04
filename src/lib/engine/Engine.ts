@@ -12,6 +12,7 @@ import { AttributeManager } from "./AttributeManager";
 import { ModifierManager } from "./ModifierManager";
 import { HistoryManager } from "./HistoryManager";
 import { EnergyManager } from "./EnergyManager";
+import { EffectManager } from "~/lib/engine/EffectManager";
 
 type Opts = {
   damage?: DamageAndHealManagerOpts;
@@ -41,6 +42,8 @@ export class Engine {
 
   public uEnergyManager: EnergyManager;
 
+  public effectManager: EffectManager;
+
   private readonly enemy: Enemy;
 
   constructor(opts: Opts = {}) {
@@ -52,12 +55,13 @@ export class Engine {
     this.timeManager = new TimeManager(this);
     this.cooldownManager = new CooldownManager(this);
     this.teamManager = new TeamManager(this);
-    this.subscriptionManager = new SubscriptionManager();
+    this.subscriptionManager = new SubscriptionManager(this);
     this.abilityManager = new AbilityManager(this);
     this.attributeManager = new AttributeManager(this);
     this.modifierManager = new ModifierManager(this);
     this.historyManager = new HistoryManager(this);
     this.uEnergyManager = new EnergyManager("UEnergy");
+    this.effectManager = new EffectManager(this);
     this.enemy = new Enemy(this);
     if (opts.enemy) {
       this.enemy.setSettings(opts.enemy);

@@ -25,7 +25,10 @@ export class AbilityManager {
     usage();
   }
 
-  public usePartialReload(usage: () => void) {
+  public usePartialReload(caster: Creature, usage: () => void) {
     usage();
+    this.engine.subscriptionManager.trigger("onPartialReload", {
+      caster,
+    });
   }
 }

@@ -21,6 +21,7 @@ type PlannedActionRegularSpecific = {
   type: "interval";
   options: {
     tickInterval: number;
+    duration?: number;
   };
 };
 type PlannedActionRegular = PlannedActionBase & PlannedActionRegularSpecific;
@@ -77,13 +78,27 @@ export class TimeManager {
         actionId: plannedAction.actionId,
       });
       switch (plannedAction.type) {
-        case "interval":
-          this.addPlannedActionInQueue({
-            ...plannedAction,
-            battleTime:
-              plannedAction.battleTime + plannedAction.options.tickInterval,
-          });
+        case "interval": {
+          let duration = plannedAction.options.duration;
+          if (duration !== undefined) {
+            duration = Math.max(
+              duration - plannedAction.options.tickInterval,
+              0,
+            );
+          }
+          if (duration !== 0) {
+            this.addPlannedActionInQueue({
+              ...plannedAction,
+              options: {
+                ...plannedAction.options,
+                duration,
+              },
+              battleTime:
+                plannedAction.battleTime + plannedAction.options.tickInterval,
+            });
+          }
           break;
+        }
         default:
           break;
       }
@@ -162,6 +177,30 @@ export class TimeManager {
     if (index !== -1) {
       this.plannedActionQueue.splice(index, 1);
     }
+  }
+
+  public changeRemainingDuration(
+    actionId: ActionId,
+    remainingDuration: number,
+  ) {
+    const action = this.plannedActionQueue.find(
+      (item) => item.actionId === actionId,
+    );
+
+    if (!action) {
+      throw new Error("no action");
+    }
+
+    if (action.type === "interval") {
+      action.options.duration = remainingDuration;
+    } else if (action.type === "once") {
+      action.battleTime = this.getBattleTime() + remainingDuration;
+      this.plannedActionQueue.sort((a, b) => a.battleTime - b.battleTime);
+    }
+  }
+
+  public hasActionInQueue(actionId: ActionId) {
+    return !!this.plannedActionQueue.find((item) => item.actionId === actionId);
   }
 
   public getTimeUntilPlannedAction(actionId: ActionId): number {

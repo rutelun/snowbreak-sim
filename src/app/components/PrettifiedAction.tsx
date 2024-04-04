@@ -131,7 +131,7 @@ export function PrettifiedAction({ action }: Props) {
                     <div key={creature.name}>
                       <Text>{creature.name} Total:</Text>
                       {[...skillData.entries()].map(([skillType, totalDmg]) => (
-                        <Text key={skillType}>
+                        <Text key={skillType} color="gray.600" pl={4}>
                           {skillType} damage:{totalDmg.toFixed(2)} dps:{" "}
                           {((totalDmg / action.battleTime) * 1_000).toFixed(2)}
                         </Text>

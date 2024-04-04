@@ -2,7 +2,7 @@ export type SkillLvl = 0 | 1 | 2 | 3 | 4 | 5;
 
 export function getSkillValueByLevel(
   possibleValues: number | readonly number[],
-  skillLvl: SkillLvl,
+  skillLvl: number,
 ): number {
   if (!Array.isArray(possibleValues)) {
     return possibleValues as number;
