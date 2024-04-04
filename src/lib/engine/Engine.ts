@@ -4,6 +4,7 @@ import { DamageAndHealManager } from "./DamageAndHealManager";
 import { TargetManager } from "./TargetManager";
 import { TeamManager } from "./TeamManager";
 import { TimeManager } from "./TimeManager";
+import type { EnemySettings } from "./Enemy";
 import { Enemy } from "./Enemy";
 import { SubscriptionManager } from "./SubscriptionManager";
 import { AbilityManager } from "./AbilityManager";
@@ -14,9 +15,7 @@ import { EnergyManager } from "./EnergyManager";
 
 type Opts = {
   damage?: DamageAndHealManagerOpts;
-  enemy?: {
-    hitActiveCharEverySecond: boolean;
-  };
+  enemy?: EnemySettings;
 };
 
 export class Engine {
@@ -60,6 +59,9 @@ export class Engine {
     this.historyManager = new HistoryManager(this);
     this.uEnergyManager = new EnergyManager("UEnergy");
     this.enemy = new Enemy(this);
+    if (opts.enemy) {
+      this.enemy.setSettings(opts.enemy);
+    }
   }
 
   public getEnemy(): Enemy {

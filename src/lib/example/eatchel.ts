@@ -5,6 +5,7 @@ import { AmanoIwato } from "~/lib/logistics/AmanoIwato";
 import { Kaguya } from "~/lib/characters/Kaguya/Kaguya";
 import { PrismaticIgniter } from "~/lib/weapons/pistols/PrismaticIgniter";
 import { Amarna } from "~/lib/logistics/Amarna";
+import { TinyGrains } from "~/lib/weapons/shotguns/TinyGrains";
 
 export function eatchelExample() {
   const engine = new Engine({
@@ -12,7 +13,7 @@ export function eatchelExample() {
       alwaysHitWeakPoint: true,
     },
     enemy: {
-      hitActiveCharEverySecond: true,
+      dealDamageEveryNSeconds: 3.5,
     },
   });
 

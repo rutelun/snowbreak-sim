@@ -11,7 +11,7 @@ import type { WeaponType } from "../../engine/types";
 export abstract class KaguyaBase extends Character {
   public override name = "Kaguya";
 
-  public readonly weaponType: WeaponType = "shotgun";
+  public readonly weaponType: WeaponType = "pistol";
 
   protected override loadoutAttrs: { [attr in Attribute]?: number };
 

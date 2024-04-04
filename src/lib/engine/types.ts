@@ -1,3 +1,3 @@
 export type SimpleTargetType = "activeChar" | "team" | "enemy" | "everyone";
 
-export type WeaponType = "shotgun" | "pistol";
+export type WeaponType = "shotgun" | "pistol" | "assaultRifle";

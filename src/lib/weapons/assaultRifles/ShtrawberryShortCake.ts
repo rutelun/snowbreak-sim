@@ -4,27 +4,25 @@ import type {
   Modifier,
 } from "../../engine/ModifierManager";
 import type { Engine } from "../../engine/Engine";
-import type { ActionId } from "../../engine/TimeManager";
 import type { ElementType } from "../../engine/AttributeManager";
 import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
-import { PistolWeapon } from "~/lib/engine/PIstolWeapon";
+import { AssaultRifleWeapon } from "~/lib/engine/AssaultRifleWeapon";
 
 type Opts = {
   tier: 1 | 2 | 3 | 4 | 5;
   lvl: 80;
 };
-export class PrismaticIgniter extends PistolWeapon {
-  element: ElementType = "kinetic";
-  private plannedAction: ActionId | undefined = undefined;
+export class StrawberryShortcake extends AssaultRifleWeapon {
+  element: ElementType = "thermal";
 
   private duration = 15_000;
 
   private atk = [13.2, 14.4, 16.6, 18.8, 20, 22];
 
-  public static atkModifierName = "Prismatic Igniter Atk";
+  public static atkModifierName = "Strawberry Shortcake Atk";
 
   private modifier: Modifier = {
-    name: PrismaticIgniter.atkModifierName,
+    name: StrawberryShortcake.atkModifierName,
     durationType: "time",
     duration: this.duration,
     unique: true,
