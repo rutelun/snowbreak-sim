@@ -4,7 +4,6 @@ import React from "react";
 import { eatchelExample } from "~/lib/example/eatchel";
 import { Accordion, Box, Container, Text } from "@chakra-ui/react";
 import { PrettifiedAction } from "~/app/components/PrettifiedAction";
-import { Amarna } from "~/lib/logistics/Amarna";
 
 const locActions = eatchelExample();
 export default function Home() {

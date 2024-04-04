@@ -5,7 +5,6 @@ import { AmanoIwato } from "~/lib/logistics/AmanoIwato";
 import { Kaguya } from "~/lib/characters/Kaguya/Kaguya";
 import { PrismaticIgniter } from "~/lib/weapons/pistols/PrismaticIgniter";
 import { Amarna } from "~/lib/logistics/Amarna";
-import { TinyGrains } from "~/lib/weapons/shotguns/TinyGrains";
 import { LittleSunshine } from "~/lib/characters/LittleSunshine/LittleSunshine";
 import { StrawberryShortcake } from "~/lib/weapons/assaultRifles/ShtrawberryShortCake";
 

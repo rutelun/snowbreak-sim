@@ -3,7 +3,6 @@ import type { SkillType, DamageType, ElementType } from "./AttributeManager";
 import type { Formula } from "~/lib/engine/Formula";
 import type { ActionId } from "~/lib/engine/TimeManager";
 import type { Engine } from "~/lib/engine/Engine";
-import { subscribe } from "diagnostics_channel";
 
 export type SubscriptionId = Symbol;
 

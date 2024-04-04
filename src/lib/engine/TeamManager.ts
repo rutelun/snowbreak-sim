@@ -76,6 +76,7 @@ export class TeamManager {
           SWAP_COOLDOWN,
         );
       },
+      caster: char,
       description: "char swap",
       isDurationConfirmed: false,
       duration: SWAP_DURATION,
