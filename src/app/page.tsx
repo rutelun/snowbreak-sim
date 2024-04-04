@@ -27,6 +27,7 @@ export default function Home() {
             Logistics: Amarna(yep i know it doesnt work, but lazy to make other
             set) x3 atk%8.5 x3 sRecovery 12 x3 thermalDmg 7.2
           </Text>
+          <Text>Always hit weakpoint, enemy damages you every 3 second</Text>
           <Accordion allowMultiple>
             {locActions.map((action, index) => (
               <PrettifiedAction key={index} action={action} />
