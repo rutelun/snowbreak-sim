@@ -284,24 +284,30 @@ export class DamageAndHealManager {
       );
     } else {
       mainDmgType = new Formula({
-        baseResult: 1,
+        baseResult: 0,
         parts: [],
-        action: "*",
+        action: "+",
         description: undefined,
       });
     }
 
+    const totalResFormula = new Formula({
+      description: undefined,
+      action: "+",
+      parts: [total, element, damageType, mainDmgType],
+    });
+
     return new Formula({
       description: "resistance multiplier",
-      action: "*",
-      parts: [total, element, damageType, mainDmgType].map(
-        (part) =>
-          new Formula({
-            action: "-",
-            description: undefined,
-            parts: [{ value: 1, description: undefined }, part],
-          }),
-      ),
+      action: "-",
+      parts: [
+        new Formula({
+          action: "-",
+          description: undefined,
+          parts: [{ value: 1, description: undefined }],
+        }),
+        totalResFormula,
+      ],
     });
   }
 

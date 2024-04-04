@@ -9,6 +9,9 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
 
   private skillShotDuration = 450;
 
+  private skillHealEffectPerTarget = 5;
+  private maxTargetsSkillHealEffect = 5;
+
   private gustOfPredation = {
     atkPercent: 120,
     flat: 26,
@@ -43,6 +46,17 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         },
       });
 
+      const modifier = this.engine.modifierManager.initializeModifier(this, {
+        name: "Eatchel skill heal effect",
+        unique: true,
+        target: "creator",
+        durationType: "permanent",
+        getValue: () => this.skillHealEffectPerTarget,
+        attr: "healBonus%",
+      });
+
+      this.engine.modifierManager.applyModifier(modifier);
+
       this.lastStandardSkillHeal = this.engine.damageAndHealManager.heal({
         targetOptions: {
           targetType: "creature",
@@ -55,6 +69,8 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
           flat: this.gustOfPredation.hpRestoredFlat,
         },
       });
+
+      this.engine.modifierManager.removeModifier(modifier.id);
 
       this.remainingStandardSkillShots = this.gustOfWandering.shots;
       this.spentSEnergy(this.energyCost.standardSkill);

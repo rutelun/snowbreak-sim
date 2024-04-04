@@ -12,8 +12,20 @@ export abstract class CharacterWithShot extends CharacterWithSkill {
     this.engine.abilityManager.useReload(() => this.reload());
   }
 
+  public usePartialReloadIfCantShot() {
+    if (!this.canShot()) {
+      this.usePartialReload();
+    }
+  }
+
   public usePartialReload() {
     this.engine.abilityManager.usePartialReload(() => this.partialReload());
+  }
+
+  public useShotIfPossible(type: ShotType) {
+    if (this.canShot()) {
+      return this.shot(type);
+    }
   }
 
   public canShot() {

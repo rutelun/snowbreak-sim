@@ -25,6 +25,11 @@ export abstract class CharacterWithSkill extends CharacterBase {
     };
   }
 
+  public useSKillIfPossible(skillType: SkillType) {
+    if (this.canUseSkill(skillType)) {
+      this.useSkill(skillType);
+    }
+  }
   public useSkill(skillType: SkillType) {
     if (!this.canUseSkill(skillType)) {
       throw new Error(`${skillType} still has cooldown`);

@@ -20,9 +20,13 @@ export function eatchelExample() {
   eatchel.equipWeapon(new BlitzingFangs(engine, { lvl: 80, tier: 2 }));
   eatchel.equipLogistics(
     new AmanoIwato(engine, [
-      { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
+      // { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
+      // { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
+      // { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
       { "atk%": 10, "critDmg%": 10.6, "kineticDmg%": 8.5 },
-      { "atk%": 10, aligmentIndex: 103, "kineticDmg%": 8.5 },
+      { "atk%": 10, "critDmg%": 10.6, "kineticDmg%": 8.5 },
+      { "atk%": 10, "critDmg%": 10.6, "kineticDmg%": 8.5 },
+      // { "atk%": 10, aligmentIndex: 103, "kineticDmg%": 8.5 },
     ]),
   );
 
@@ -57,23 +61,15 @@ export function eatchelExample() {
         Amarna.ballisticModifierName,
       );
 
-    if (needUseKaguyaSkill && kaguya.canUseSkill("supportSkill")) {
-      kaguya.useSkill("supportSkill");
+    if (needUseKaguyaSkill) {
+      kaguya.useSKillIfPossible("supportSkill");
     }
 
-    if (eatchel.canUseSkill("ultimateSkill")) {
-      eatchel.useSkill("ultimateSkill");
-    }
-
-    // if (eatchel.canUseSkill("standardSkill")) {
-    //   eatchel.useSkill("standardSkill");
-    // }
-
-    if (eatchel.canShot()) {
-      eatchel.useShot("ads");
-    } else {
-      eatchel.usePartialReload();
-    }
+    eatchel.useSKillIfPossible("ultimateSkill");
+    // eatchel.useSKillIfPossible("standardSkill");
+    eatchel.useShotIfPossible("ads");
+    eatchel.usePartialReloadIfCantShot();
   }
+
   return engine.historyManager.getPrettified();
 }
