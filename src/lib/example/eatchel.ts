@@ -30,9 +30,15 @@ export function eatchelExample() {
   kaguya.equipWeapon(new PrismaticIgniter(engine, { lvl: 80, tier: 1 }));
   kaguya.equipLogistics(
     new Amarna(engine, [
+      // { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
+      // { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
       { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
-      { "atk%": 10, skillHaste: 19.3, "kineticDmg%": 8.5 },
+      // { "atk%": 10, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
       { "atk%": 10, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
+      { "atk%": 10, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
+      // { skillHaste: 19.3, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
+      // { skillHaste: 19.3, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
+      // { skillHaste: 19.3, "sEnergyRecovery%": 14.1, "kineticDmg%": 8.5 },
     ]),
   );
 
@@ -59,9 +65,9 @@ export function eatchelExample() {
       eatchel.useSkill("ultimateSkill");
     }
 
-    if (eatchel.canUseSkill("standardSkill")) {
-      eatchel.useSkill("standardSkill");
-    }
+    // if (eatchel.canUseSkill("standardSkill")) {
+    //   eatchel.useSkill("standardSkill");
+    // }
 
     if (eatchel.canShot()) {
       eatchel.useShot("ads");

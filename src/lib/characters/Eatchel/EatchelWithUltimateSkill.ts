@@ -6,7 +6,7 @@ import type { ActionId } from "~/lib/engine/TimeManager";
 import { getDamageOrHealBySkillLevel } from "~/lib/utils/getDamageOrHealBySkillLevel";
 
 export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
-  private ultimateSkillCooldown = 60;
+  private ultimateSkillCooldown = 60_000;
   private energyForUltimateMaxEffect = 100;
 
   private maxClawCount = 5;

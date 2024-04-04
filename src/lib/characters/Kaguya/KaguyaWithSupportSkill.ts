@@ -8,7 +8,7 @@ import type { ActionId } from "~/lib/engine/TimeManager";
 
 export abstract class KaguyaWithSupportSkill extends KaguyaBase {
   private supportSkillCooldown = 20_000;
-  private supportSkillDuration = 10_000;
+  private supportSkillDuration = 10_001;
   private supportSkillCastDuration = 1_000;
 
   private supportSkillDmgInterval = 1_250;

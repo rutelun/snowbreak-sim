@@ -111,12 +111,12 @@ export class TimeManager {
   }
 
   public doAction(action: RegularAction) {
-    const currentBattleTime = this.battleTime;
+    const currentBattleTime = this.battleTime + action.duration;
     this.doPlannedActions(
       Math.max(this.battleTime + action.duration, this.battleTime),
     );
 
-    this.battleTime = currentBattleTime + action.duration;
+    this.battleTime = currentBattleTime;
     this.engine.historyManager.add({
       type: "actionStart",
       description: action.description,
