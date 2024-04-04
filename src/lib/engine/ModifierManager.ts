@@ -7,7 +7,6 @@ import type {
   AttributeAggregator,
   AttributeDistribution,
   AttributeWithDistribution,
-  FormulaAggregator,
   TotalAttribute,
 } from "./AttributeManager";
 import type { SimpleTargetType } from "./types";
@@ -49,10 +48,16 @@ export class ModifierManager {
   private modifiers: Map<Creature, Map<ModifierId, InitializedModifier>> =
     new Map();
 
+  private modifiersByName: Map<string, Map<Creature, InitializedModifier>> =
+    new Map();
+
   private deleteModifiers: Map<ModifierId, Map<Creature, () => void>> =
     new Map();
 
   private modifiersPlannedActions: Map<ModifierId, ActionId> = new Map();
+
+  private initializedModifiers: Map<ModifierId, InitializedModifier> =
+    new Map();
 
   public constructor(private engine: Engine) {}
 
@@ -74,23 +79,33 @@ export class ModifierManager {
           this.deleteModifiers.get(oldModifier.id)?.delete(target);
         }
       }
+
       if (!this.modifiers.has(target)) {
         this.modifiers.set(target, new Map());
       }
-
       this.modifiers.get(target)?.set(modifier.id, modifier);
+
+      if (!this.modifiersByName.has(modifier.name)) {
+        this.modifiersByName.set(modifier.name, new Map());
+      }
+      this.modifiersByName.get(modifier.name)?.set(target, modifier);
+
       if (!this.deleteModifiers.has(modifier.id)) {
         this.deleteModifiers.set(modifier.id, new Map());
       }
-      this.deleteModifiers
-        .get(modifier.id)
-        ?.set(target, () => this.modifiers.get(target)?.delete(modifier.id));
+
+      this.deleteModifiers.get(modifier.id)?.set(target, () => {
+        this.modifiers.get(target)?.delete(modifier.id);
+        this.modifiersByName.get(modifier.name)?.delete(target);
+      });
     });
+
+    modifier.init?.(modifier);
 
     if (modifier.durationType === "time") {
       const actionId = this.engine.timeManager.addPlannedAction({
         type: "once",
-        description: `expire ${modifier.name}`,
+        description: `Expire ${modifier.name}`,
         waitingDuration: modifier.duration,
         action: () => this.removeModifier(modifier.id),
       });
@@ -103,9 +118,7 @@ export class ModifierManager {
     creature: Creature,
     modifierName: string,
   ): InitializedModifier | undefined {
-    return [...(this.modifiers.get(creature)?.values() ?? [])].find(
-      (modifier) => modifier.name === modifierName,
-    );
+    return this.modifiersByName.get(modifierName)?.get(creature);
   }
 
   public hasModifierByName(creature: Creature, modifierName: string): boolean {
@@ -197,16 +210,30 @@ export class ModifierManager {
     creator: Creature,
     modifier: Modifier,
   ): InitializedModifier {
-    return {
+    const initializedModifier = {
       ...modifier,
       creator,
       id: Symbol("modifierId"),
     };
+
+    this.initializedModifiers.set(initializedModifier.id, initializedModifier);
+
+    return initializedModifier;
   }
 
   public removeModifier(modifierId: ModifierId) {
+    const modifier = this.initializedModifiers.get(modifierId);
+    if (modifier) {
+      modifier.destroy?.(modifier);
+    }
+
     this.deleteModifiers.get(modifierId)?.forEach((deleter) => deleter());
     this.deleteModifiers.delete(modifierId);
+
+    const actionId = this.modifiersPlannedActions.get(modifierId);
+    if (actionId) {
+      this.engine.timeManager.deletePlannedAction(actionId);
+    }
     this.modifiersPlannedActions.delete(modifierId);
   }
 }

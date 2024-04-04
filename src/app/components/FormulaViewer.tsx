@@ -69,13 +69,21 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
       >
         {showSummarize && formula.parts.length > 0 ? "[" : ""}
         {formula.parts.map((part, index) => (
-          <>
+          <span key={index}>
             {part instanceof Formula ? (
               <>
+                {isLowerPriority(formula.action, part.action) &&
+                part.parts.length > 1
+                  ? "("
+                  : ""}
                 <FormulaViewer
                   formula={part}
                   deep={part.description ? deep + 1 : deep}
                 />
+                {isLowerPriority(formula.action, part.action) &&
+                part.parts.length > 1
+                  ? ")"
+                  : ""}
               </>
             ) : (
               <>
@@ -96,7 +104,7 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
               </>
             )}
             {index !== formula.parts.length - 1 ? formula.action : ""}
-          </>
+          </span>
         ))}
         {showSummarize && formula.parts.length > 0 ? "]" : ""}
       </Text>

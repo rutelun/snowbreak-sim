@@ -62,7 +62,7 @@ export abstract class EatchelWithSupportSkill extends EatchelWithStandardSkillAn
       this.engine.damageAndHealManager.dealDamage({
         targetOptions: { targetType: "enemy" },
         caster: this,
-        element: "kinetic",
+        element: this.element,
         damageType: "supportSkill",
         value: {
           type: "atkBased",

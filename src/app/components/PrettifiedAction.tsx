@@ -1,5 +1,9 @@
+import type { ReactNode } from "react";
 import React from "react";
-import type { PrettifiedActionType as PrettifiedActionType } from "~/lib/engine/HistoryManager";
+import type {
+  PrettifiedActionType as PrettifiedActionType,
+  PrettifiedActionForeground,
+} from "~/lib/engine/HistoryManager";
 import {
   AccordionButton,
   AccordionItem,
@@ -11,6 +15,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
 } from "@chakra-ui/react";
 import { AttrWithDistribution } from "~/app/components/AttrWithDistribution";
 import { FormulaViewer } from "~/app/components/FormulaViewer";
@@ -19,27 +24,34 @@ type Props = {
   action: PrettifiedActionType;
 };
 
-export function PrettifiedAction({ action }: Props) {
-  const actionBattleTime = (action.battleTime / 1_000).toFixed(2);
-  if (action.type === "foreground") {
-    return (
-      <AccordionItem>
-        <AccordionButton paddingLeft={0}>
-          <Heading size="md" textAlign="left">
-            <Flex gap={2}>
-              [{actionBattleTime}]
-              <div>
-                {action.description}&nbsp;
-                {action.totalDmg > 0
-                  ? `[TotalDmg: ${action.totalDmg.toFixed(0)}] `
-                  : ""}
-                {action.totalHeal > 0
-                  ? `[TotalHeal: ${action.totalHeal.toFixed(0)}]`
-                  : ""}
-              </div>
-            </Flex>
-          </Heading>
-        </AccordionButton>
+export function renderNode({
+  isExpanded,
+  action,
+  actionBattleTime,
+}: {
+  isExpanded: boolean;
+  actionBattleTime: string;
+  action: PrettifiedActionForeground;
+}): ReactNode {
+  return (
+    <>
+      <AccordionButton paddingLeft={0}>
+        <Heading size="md" textAlign="left">
+          <Flex gap={2}>
+            [{actionBattleTime}]
+            <div>
+              {action.description}&nbsp;
+              {action.totalDmg > 0
+                ? `[TotalDmg: ${action.totalDmg.toFixed(0)}] `
+                : ""}
+              {action.totalHeal > 0
+                ? `[TotalHeal: ${action.totalHeal.toFixed(0)}]`
+                : ""}
+            </div>
+          </Flex>
+        </Heading>
+      </AccordionButton>
+      {isExpanded ? (
         <AccordionPanel paddingLeft={0}>
           {action.formulas.map((formula, index) => (
             <div key={index}>
@@ -69,6 +81,21 @@ export function PrettifiedAction({ action }: Props) {
             </TabPanels>
           </Tabs>
         </AccordionPanel>
+      ) : (
+        ""
+      )}
+    </>
+  );
+}
+
+export function PrettifiedAction({ action }: Props) {
+  const actionBattleTime = (action.battleTime / 1_000).toFixed(2);
+  if (action.type === "foreground") {
+    return (
+      <AccordionItem>
+        {({ isExpanded }) =>
+          renderNode({ isExpanded, action, actionBattleTime })
+        }
       </AccordionItem>
     );
   } else if (action.type === "background") {
@@ -85,6 +112,33 @@ export function PrettifiedAction({ action }: Props) {
                     {index == array.length - 1 ? "" : <br />}
                   </span>
                 ))}
+              </div>
+            </Flex>
+          </Heading>
+        </AccordionButton>
+      </AccordionItem>
+    );
+  } else if (action.type === "battleEnd") {
+    return (
+      <AccordionItem>
+        <AccordionButton paddingLeft={0}>
+          <Heading size="md" textAlign="left">
+            <Flex gap={2}>
+              [{actionBattleTime}]
+              <div>
+                {[...action.damagePerCharPerType.entries()].map(
+                  ([creature, skillData]) => (
+                    <div key={creature.name}>
+                      <Text>{creature.name} Total:</Text>
+                      {[...skillData.entries()].map(([skillType, totalDmg]) => (
+                        <Text key={skillType}>
+                          {skillType} damage:{totalDmg.toFixed(2)} dps:{" "}
+                          {((totalDmg / action.battleTime) * 1_000).toFixed(2)}
+                        </Text>
+                      ))}
+                    </div>
+                  ),
+                )}
               </div>
             </Flex>
           </Heading>

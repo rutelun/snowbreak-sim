@@ -65,7 +65,7 @@ export class DamageAndHealManager {
         action: "*",
         parts: [
           initialDmg,
-          critMulti,
+          critMulti.total,
           dmgMulti,
           finalDmgMulti,
           damageTakenMulti,
@@ -73,10 +73,8 @@ export class DamageAndHealManager {
           resMulti,
           shieldMulti,
         ],
-        description: "damage dealt",
+        description: `${opts.caster.name} dealt damage`,
       });
-
-      console.log(formula);
 
       const dmg = formula.calc();
 
@@ -88,6 +86,16 @@ export class DamageAndHealManager {
         element: opts.element,
         caster: opts.caster,
         formula,
+      });
+
+      this.engine.subscriptionManager.trigger("onDamageDealt", {
+        value: dmg,
+        target,
+        damageType: opts.damageType,
+        element: opts.element,
+        caster: opts.caster,
+        formula,
+        critRateFormula: critMulti.critRate,
       });
 
       totalDmg += dmg;
@@ -297,28 +305,35 @@ export class DamageAndHealManager {
     });
   }
 
-  private getCritMulti(target: Creature, opts: DealDamageOpts): Formula {
+  private getCritMulti(
+    target: Creature,
+    opts: DealDamageOpts,
+  ): { total: Formula; critRate: Formula } {
+    let critRate: Formula;
     if (opts.forceCanCrit === false || inArray(SKILL_TYPES, opts.damageType)) {
-      return new Formula({
+      critRate = new Formula({
+        action: "*",
+        parts: [],
+        baseResult: 0,
+        visibleAsPercent: true,
+        description: "critRate",
+      });
+    } else if (this.opts.alwaysHitWeakPoint) {
+      critRate = new Formula({
         action: "*",
         parts: [],
         baseResult: 1,
-        baseResultVisible: false,
-        description: "crit multiplier(can't crit)",
+        visibleAsPercent: true,
+        description: "critRate",
       });
+    } else {
+      critRate = this.engine.attributeManager.getAttrFormula(
+        opts.caster,
+        "critRate",
+      );
     }
 
-    const critRate = this.opts.alwaysHitWeakPoint
-      ? new Formula({
-          action: "*",
-          parts: [],
-          baseResult: 1,
-          visibleAsPercent: true,
-          description: "critRate",
-        })
-      : this.engine.attributeManager.getAttrFormula(opts.caster, "critRate");
-
-    return new Formula({
+    const total = new Formula({
       action: "+",
       description: "crit multiplier",
       parts: [
@@ -336,6 +351,8 @@ export class DamageAndHealManager {
         }),
       ],
     });
+
+    return { total, critRate };
   }
 
   private getShieldMulti(target: Creature, opts: DealDamageOpts): Formula {

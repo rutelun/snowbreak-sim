@@ -8,27 +8,27 @@ import type {
 } from "../../engine/AttributeManager";
 import type { WeaponType } from "../../engine/types";
 
-export abstract class EatchelBase extends Character {
-  public override name = "Eatchel";
+export abstract class KaguyaBase extends Character {
+  public override name = "Kaguya";
 
   public readonly weaponType: WeaponType = "shotgun";
 
-  public override element: ElementType = "kinetic";
-
   protected override loadoutAttrs: { [attr in Attribute]?: number };
 
+  public override element: ElementType = "frost";
+
   protected energyCost: Record<SkillType, number> = {
-    standardSkill: 5,
-    supportSkill: 12,
-    ultimateSkill: 40,
+    standardSkill: 15,
+    supportSkill: 35,
+    ultimateSkill: 80,
   };
 
   public constructor(engine: Engine, opts: CharacterOpts) {
     super(engine, opts);
     this.loadoutAttrs = {
-      hpBase: 22382,
-      atkBase: 1328,
-      defBase: 1053,
+      hpBase: 22500,
+      atkBase: 1259,
+      defBase: 864,
       aligmentIndex: 300,
     };
   }

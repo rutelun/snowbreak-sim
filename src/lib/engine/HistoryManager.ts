@@ -72,7 +72,7 @@ type HistoryItemWithBattleTime = HistoryItem & {
   >;
 };
 
-type PrettifiedActionForeground = {
+export type PrettifiedActionForeground = {
   type: "foreground";
   caster: Creature | undefined;
   totalDmg: number;
@@ -100,9 +100,16 @@ type PrettifiedActionBackground = {
   battleTime: number;
 };
 
+type PrettifiedActionBattleEnd = {
+  type: "battleEnd";
+  battleTime: number;
+  damagePerCharPerType: Map<Creature, Map<DamageType | "allDamage", number>>;
+};
+
 export type PrettifiedActionType =
   | PrettifiedActionForeground
-  | PrettifiedActionBackground;
+  | PrettifiedActionBackground
+  | PrettifiedActionBattleEnd;
 
 export class HistoryManager {
   private loggedActions: HistoryItemWithBattleTime[] = [];
@@ -145,6 +152,10 @@ export class HistoryManager {
     const result: PrettifiedActionType[] = [];
     let lastForegroundActionIndex = -1;
     let lastBackgroundActionIndex = -1;
+    let totalDamagePerSkill: Map<
+      Creature,
+      Map<DamageType | "allDamage", number>
+    > = new Map();
     this.loggedActions.forEach((loggedAction) => {
       switch (loggedAction.type) {
         case "actionStart": {
@@ -171,6 +182,23 @@ export class HistoryManager {
           break;
         }
         case "dealDamage": {
+          if (!totalDamagePerSkill.has(loggedAction.caster)) {
+            totalDamagePerSkill.set(loggedAction.caster, new Map());
+          }
+
+          const oldValueAllDamage =
+            totalDamagePerSkill.get(loggedAction.caster)?.get("allDamage") ?? 0;
+          totalDamagePerSkill
+            .get(loggedAction.caster)
+            ?.set("allDamage", oldValueAllDamage + loggedAction.value);
+
+          const oldValue =
+            totalDamagePerSkill
+              .get(loggedAction.caster)
+              ?.get(loggedAction.damageType) ?? 0;
+          totalDamagePerSkill
+            .get(loggedAction.caster)
+            ?.set(loggedAction.damageType, oldValue + loggedAction.value);
           if (
             lastForegroundActionIndex === -1 ||
             !result[lastForegroundActionIndex]
@@ -206,7 +234,9 @@ export class HistoryManager {
           const previousBackgroundAction =
             lastBackgroundActionIndex === -1
               ? undefined
-              : result[lastBackgroundActionIndex];
+              : (result[
+                  lastBackgroundActionIndex
+                ] as PrettifiedActionBackground);
           if (
             previousBackgroundAction?.battleTime === loggedAction.battleTime
           ) {
@@ -225,6 +255,12 @@ export class HistoryManager {
         default:
           break;
       }
+    });
+
+    result.push({
+      type: "battleEnd",
+      damagePerCharPerType: totalDamagePerSkill,
+      battleTime: this.engine.timeManager.getBattleTime(),
     });
     return result;
   }

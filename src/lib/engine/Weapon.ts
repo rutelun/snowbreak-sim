@@ -10,7 +10,7 @@ export abstract class Weapon {
 
   public abstract readonly type: WeaponType;
 
-  public tier: 1 | 2 = 1;
+  public tier: 1 | 2 | 3 | 4 | 5 = 1;
 
   public lvl: 80 = 80;
 

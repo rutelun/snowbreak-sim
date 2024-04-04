@@ -47,14 +47,15 @@ export class Formula {
         throw new Error("no parts");
       }
     }
-    const [firstPart, ...otherParts] = this.parts.map((part) => {
+    const parts = this.parts.map((part) => {
       if (part instanceof Formula) {
         return part.calc();
       }
 
       return part.value;
     });
-    let result = firstPart;
+
+    let result = parts[0];
     let aggregator: (result: number, item: number) => number;
     switch (this.action) {
       case "*":
@@ -71,9 +72,9 @@ export class Formula {
         break;
     }
 
-    otherParts.forEach((part) => {
-      result = aggregator(result, part);
-    });
+    for (let i = 1; i < parts.length; i += 1) {
+      result = aggregator(result, parts[i]);
+    }
 
     return result;
   }

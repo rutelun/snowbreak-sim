@@ -56,26 +56,20 @@ export class TimeManager {
   public constructor(private engine: Engine) {}
 
   private doPlannedActions(untilBattleTime: BattleTime) {
-    let maxIndex = this.plannedActionQueue.findIndex(
-      (plannedAction) => plannedAction.battleTime > untilBattleTime,
-    );
-    if (maxIndex === -1) {
-      maxIndex = this.plannedActionQueue.length;
-    }
-
-    for (let i = 0; i < maxIndex; i += 1) {
-      const plannedAction = this.plannedActionQueue[i];
-      if (!plannedAction) {
-        throw new Error("no planned action");
-      }
-
+    while (
+      this.plannedActionQueue.length > 0 &&
+      this.plannedActionQueue[0].battleTime <= untilBattleTime
+    ) {
+      const plannedAction = this.plannedActionQueue[0];
       this.battleTime = plannedAction.battleTime;
 
       this.engine.historyManager.add({
         type: "delayedActionStart",
         description: plannedAction.description,
         actionId: plannedAction.actionId,
+        caster: undefined, // TODO:
       });
+
       plannedAction.action();
 
       this.engine.historyManager.add({
@@ -93,10 +87,11 @@ export class TimeManager {
         default:
           break;
       }
-    }
 
-    if (maxIndex > 0) {
-      this.plannedActionQueue.splice(0, maxIndex);
+      const index = this.plannedActionQueue.indexOf(plannedAction);
+      if (index !== -1) {
+        this.plannedActionQueue.splice(index, 1);
+      }
     }
   }
 
@@ -125,6 +120,7 @@ export class TimeManager {
     this.engine.historyManager.add({
       type: "actionStart",
       description: action.description,
+      caster: undefined,
     });
     action.action();
     this.engine.historyManager.add({

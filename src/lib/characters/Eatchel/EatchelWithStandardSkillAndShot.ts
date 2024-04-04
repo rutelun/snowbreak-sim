@@ -35,7 +35,7 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         },
         caster: this,
         damageType: "standardSkill",
-        element: "kinetic",
+        element: this.element,
         value: {
           type: "atkBased",
           percent: this.gustOfPredation.atkPercent,
@@ -86,7 +86,7 @@ export abstract class EatchelWithStandardSkillAndShot extends EatchelBase {
         },
         caster: this,
         damageType: "standardSkill",
-        element: "kinetic",
+        element: this.element,
         getValue: () =>
           new Formula({
             action: "+",

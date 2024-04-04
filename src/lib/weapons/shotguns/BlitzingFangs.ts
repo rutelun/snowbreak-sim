@@ -73,6 +73,7 @@ export class BlitzingFangs extends ShotgunWeapon {
       atkBase: 789,
       "atk%": 50,
       "critDmg%": 30,
+      critRate: 25,
     };
   }
 

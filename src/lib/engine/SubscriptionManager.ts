@@ -1,11 +1,25 @@
 import type { Creature } from "./Creature";
-import type { SkillType } from "./AttributeManager";
+import type { SkillType, DamageType, ElementType } from "./AttributeManager";
+import type { Formula } from "~/lib/engine/Formula";
 
 export type SubscriptionId = Symbol;
 
 export type Subscriptions = {
   onHeal: {
     value: number;
+    target: Creature;
+  };
+  onSwap: {
+    previousActive: Creature;
+    currentActive: Creature;
+  };
+  onDamageDealt: {
+    value: number;
+    formula: Formula;
+    critRateFormula: Formula;
+    element: ElementType;
+    damageType: DamageType;
+    caster: Creature;
     target: Creature;
   };
   onBeforeSkillUsed: {

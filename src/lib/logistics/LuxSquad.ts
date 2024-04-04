@@ -41,6 +41,21 @@ export class LuxSquad extends LogisticSet {
       (this.loadoutAttrs["healBonus%"] ?? 0) + 24;
   }
 
+  public unequip() {
+    this.subscriptions.forEach((subscription) => {
+      this.engine.subscriptionManager.unsubscribe(subscription);
+    });
+
+    this.subscriptions = new Set();
+
+    if (this.initializedModifier) {
+      this.engine.modifierManager.removeModifier(this.initializedModifier.id);
+      this.initializedModifier = undefined;
+    }
+
+    super.unequip();
+  }
+
   public equip(owner: Character) {
     super.equip(owner);
     this.initializedModifier = this.engine.modifierManager.initializeModifier(
