@@ -89,11 +89,6 @@ export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase 
         ),
       },
     });
-
-    this.engine.effectManager.applyEffect(this.engine.getEnemy(), {
-      effect: "burning",
-      duration: this.burningDmgDuration,
-    });
   }
 
   protected supportSkill() {
@@ -119,6 +114,12 @@ export abstract class LittleSunshineWithSupportSkill extends LittleSunshineBase 
             action: () => this.burningSupportSkillDamage(),
           });
         }
+
+        this.engine.effectManager.applyEffect(this.engine.getEnemy(), {
+          effect: "burning",
+          duration: this.burningDmgDuration,
+        });
+
         const dealDamageSubscription =
           this.engine.subscriptionManager.temporarySubscribe({
             type: "onDamageDealt",
