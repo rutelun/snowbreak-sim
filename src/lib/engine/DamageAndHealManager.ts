@@ -335,19 +335,21 @@ export class DamageAndHealManager {
     let critRate: Formula;
     if (opts.forceCanCrit === false || inArray(SKILL_TYPES, opts.damageType)) {
       critRate = new Formula({
-        action: "*",
-        parts: [],
-        baseResult: 0,
+        action: "+",
+        parts: [
+          { value: 0, description: "damage cant crit", visibleAsPercent: true },
+        ],
         visibleAsPercent: true,
         description: "critRate",
       });
     } else if (this.opts.alwaysHitWeakPoint) {
       critRate = new Formula({
         action: "*",
-        parts: [],
-        baseResult: 1,
-        visibleAsPercent: true,
+        parts: [
+          { value: 1, description: "weakpoint hit", visibleAsPercent: true },
+        ],
         description: "critRate",
+        visibleAsPercent: true,
       });
     } else {
       critRate = this.engine.attributeManager.getAttrFormula(
@@ -359,6 +361,7 @@ export class DamageAndHealManager {
     const total = new Formula({
       action: "+",
       description: "crit multiplier",
+      visibleAsPercent: true,
       parts: [
         { value: 1, description: undefined },
         new Formula({

@@ -25,7 +25,7 @@ export abstract class CharacterWithSkill extends CharacterBase {
     };
   }
 
-  public useSKillIfPossible(skillType: SkillType) {
+  public useSkillIfPossible(skillType: SkillType) {
     if (this.canUseSkill(skillType)) {
       this.useSkill(skillType);
     }

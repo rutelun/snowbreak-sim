@@ -69,12 +69,12 @@ export function eatchelExample() {
       );
 
     if (needUseKaguyaSkill) {
-      kaguya.useSKillIfPossible("supportSkill");
+      kaguya.useSkillIfPossible("supportSkill");
     }
 
-    littleSunshine.useSKillIfPossible("supportSkill");
+    littleSunshine.useSkillIfPossible("supportSkill");
 
-    eatchel.useSKillIfPossible("ultimateSkill");
+    eatchel.useSkillIfPossible("ultimateSkill");
     // eatchel.useSKillIfPossible("standardSkill");
     eatchel.useShotIfPossible("ads");
     eatchel.usePartialReloadIfCantShot();
