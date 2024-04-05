@@ -33,7 +33,7 @@ export class Amarna extends LogisticSet {
     duration: 15_000,
     unique: true,
     target: "team",
-    attr: "adsDmg%",
+    attr: "ballisticDmg%",
     getValue: () => this.ballisticDmg,
     destroy: () => {
       if (this.initializedAtkModifier) {

@@ -448,6 +448,7 @@ export const FINAL_DAMAGE_ATTRIBUTES = [
   ...ATTRIBUTES_SHOT_FINAL_DMG,
   "finalDmg%",
   "damageTaken%",
+  "critDmg%",
 ] as const;
 export const DAMAGE_ATTRIBUTES = [
   ...ATTRIBUTES_ELEMENTAL_DMG,
@@ -468,7 +469,6 @@ export const PERCENT_ATTRIBUTE = [
   "hp%",
   "atk%",
   "def%",
-  "critDmg%",
   "sEnergyRecovery%",
   "uEnergyRecovery%",
   "healBonus%",

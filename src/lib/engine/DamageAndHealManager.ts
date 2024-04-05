@@ -363,7 +363,14 @@ export class DamageAndHealManager {
       description: "crit multiplier",
       visibleAsPercent: true,
       parts: [
-        { value: 1, description: undefined },
+        new Formula({
+          action: "-",
+          description: undefined,
+          parts: [
+            { value: 1, description: undefined, visibleAsPercent: true },
+            critRate,
+          ],
+        }),
         new Formula({
           action: "*",
           description: undefined,
