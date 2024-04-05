@@ -56,7 +56,7 @@ export class TinyGrains extends ShotgunWeapon {
     this.loadoutAttrs = {
       atkBase: 811,
       "atk%": 52,
-      "critDmg%": 30,
+      "weaponCritDmg%": 30,
       critRate: 25,
     };
   }

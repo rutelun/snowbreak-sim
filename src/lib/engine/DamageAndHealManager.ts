@@ -363,19 +363,16 @@ export class DamageAndHealManager {
       description: "crit multiplier",
       visibleAsPercent: true,
       parts: [
-        new Formula({
-          action: "-",
-          description: undefined,
-          parts: [
-            { value: 1, description: undefined, visibleAsPercent: true },
-            critRate,
-          ],
-        }),
+        { value: 1, description: undefined, visibleAsPercent: true },
         new Formula({
           action: "*",
           description: undefined,
           parts: [
             critRate,
+            this.engine.attributeManager.getAttrFormula(
+              opts.caster,
+              "weaponCritDmg%",
+            ),
             this.engine.attributeManager.getAttrFormula(
               opts.caster,
               "critDmg%",

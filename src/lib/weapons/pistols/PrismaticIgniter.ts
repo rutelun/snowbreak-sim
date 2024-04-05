@@ -54,7 +54,7 @@ export class PrismaticIgniter extends PistolWeapon {
     this.loadoutAttrs = {
       atkBase: 789,
       "atk%": 40,
-      "critDmg%": 60,
+      "weaponCritDmg%": 60,
       critRate: 0, // TODO:
     };
   }

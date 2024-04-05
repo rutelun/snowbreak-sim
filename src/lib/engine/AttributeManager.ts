@@ -455,6 +455,7 @@ export const DAMAGE_ATTRIBUTES = [
   ...ATTRIBUTES_SKILL_DMG,
   ...ATTRIBUTES_SHOT_DMG,
   "dmg%",
+  "weaponCritDmg%",
 ] as const;
 export const RESISTANCE_ATTRIBUTES = [
   ...ATTRIBUTES_ELEMENTAL_RESISTANCE,
@@ -510,6 +511,7 @@ export const HISTORY_ATTRIBUTES = [
   ...FINAL_DAMAGE_ATTRIBUTES,
   ...RESISTANCE_ATTRIBUTES,
   "aligmentIndex",
+  "weaponCritDmg%",
   "critDmg%",
   "sEnergyRecovery%",
   "uEnergyRecovery%",
