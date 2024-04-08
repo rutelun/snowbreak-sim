@@ -1,5 +1,6 @@
 import { LittleSunshineWithSupportSkill } from "~/lib/characters/LittleSunshine/LittleSunshineWithSupportSkill";
 import type { InitializedModifier } from "~/lib/engine/ModifierManager";
+import type { SkillType } from "~/lib/engine/AttributeManager";
 
 export class LittleSunshine extends LittleSunshineWithSupportSkill {
   private deiwosBase = 8;
@@ -49,5 +50,9 @@ export class LittleSunshine extends LittleSunshineWithSupportSkill {
 
   protected ultimateSkill(): void {
     throw new Error("not implemented");
+  }
+
+  public allowedToUseSkills(): SkillType[] {
+    return ["supportSkill"];
   }
 }

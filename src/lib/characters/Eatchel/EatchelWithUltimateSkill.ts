@@ -35,6 +35,8 @@ export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
   private ultimateModifier: InitializedModifier | undefined = undefined;
   private clawClearHeal = {};
 
+  public static ultimateModifierName = "Eatchel Claws";
+
   private clearClaws() {
     if (this.ultimateModifier) {
       this.engine.modifierManager.removeModifier(this.ultimateModifier.id);
@@ -115,7 +117,7 @@ export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
       this,
       {
         durationType: "permanent",
-        name: "Eatchel Claws",
+        name: EatchelWithUltimateSkill.ultimateModifierName,
         unique: false,
         target: "team",
         attr: "atkFlat",

@@ -1,5 +1,6 @@
 import { EatchelWithUltimateSkill } from "./EatchelWithUltimateSkill";
 import type { InitializedModifier } from "~/lib/engine/ModifierManager";
+import type { ShotType, SkillType } from "~/lib/engine/AttributeManager";
 
 export class Eatchel extends EatchelWithUltimateSkill {
   private deiwosBase = 20;
@@ -35,5 +36,13 @@ export class Eatchel extends EatchelWithUltimateSkill {
     }
 
     super.destroy();
+  }
+
+  public allowedToUseSkills(): SkillType[] {
+    return ["supportSkill", "standardSkill", "ultimateSkill"];
+  }
+
+  public allowedToUseShots(): ShotType[] {
+    return ["ads", "hip-fire"];
   }
 }

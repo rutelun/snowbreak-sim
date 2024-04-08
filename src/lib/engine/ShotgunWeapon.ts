@@ -61,6 +61,10 @@ export abstract class ShotgunWeapon extends Weapon {
     }
   }
 
+  public override canReload(): boolean {
+    return this.currentAmmo < this.ammoCapacity;
+  }
+
   public override partialReload() {
     if (this.currentAmmo >= this.ammoCapacity) {
       return;

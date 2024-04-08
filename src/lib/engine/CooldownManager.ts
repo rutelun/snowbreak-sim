@@ -35,15 +35,19 @@ export class CooldownManager {
     this.cooldownMap.set(cooldownId, this.getCurrentBattleTime() + duration);
   }
 
-  public changeCooldown(cooldownId: CooldownId, changer: CooldownChanger) {
+  public getRemainingCooldown(cooldownId: CooldownId): number {
     if (!this.cooldownMap.has(cooldownId)) {
       throw new Error("unknown cooldown id");
     }
 
-    const remainingCooldown = Math.max(
+    return Math.max(
       (this.cooldownMap.get(cooldownId) ?? 0) - this.getCurrentBattleTime(),
       0,
     );
+  }
+
+  public changeCooldown(cooldownId: CooldownId, changer: CooldownChanger) {
+    const remainingCooldown = this.getRemainingCooldown(cooldownId);
 
     this.cooldownMap.set(
       cooldownId,

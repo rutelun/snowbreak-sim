@@ -58,6 +58,12 @@ export abstract class CharacterWithSkill extends CharacterBase {
     );
   }
 
+  public getSkillRemainingCooldown(skillType: SkillType) {
+    return this.engine.cooldownManager.getRemainingCooldown(
+      this.skillCooldownIds[skillType],
+    );
+  }
+
   protected isSkillCooldownEnd(skillType: SkillType) {
     return this.engine.cooldownManager.isCooldownEnd(
       this.skillCooldownIds[skillType],

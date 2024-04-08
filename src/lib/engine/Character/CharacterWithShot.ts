@@ -42,6 +42,10 @@ export abstract class CharacterWithShot extends CharacterWithSkill {
     this.weapon.reload();
   }
 
+  public canReload() {
+    return this.weapon.canReload();
+  }
+
   protected partialReload() {
     this.weapon.partialReload();
   }

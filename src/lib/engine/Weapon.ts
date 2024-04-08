@@ -72,6 +72,10 @@ export abstract class Weapon {
     throw new Error("the weapon cant be partial reloaded");
   }
 
+  public canReload(): boolean {
+    return false;
+  }
+
   public getOwnAttr(attr: Attribute): number {
     return this.loadoutAttrs[attr] ?? 0;
   }

@@ -6,7 +6,7 @@ import { Kaguya } from "~/lib/characters/Kaguya/Kaguya";
 import { PrismaticIgniter } from "~/lib/weapons/pistols/PrismaticIgniter";
 import { Amarna } from "~/lib/logistics/Amarna";
 import { LittleSunshine } from "~/lib/characters/LittleSunshine/LittleSunshine";
-import { StrawberryShortcake } from "~/lib/weapons/assaultRifles/ShtrawberryShortCake";
+import { StrawberryShortcake } from "~/lib/weapons/assaultRifles/StrawberryShortcake";
 
 export function eatchelExample() {
   const engine = new Engine({
@@ -53,32 +53,5 @@ export function eatchelExample() {
     ]),
   );
 
-  engine.timeManager.startBattle();
-
-  const enemy = engine.getEnemy();
-
-  while (engine.timeManager.getBattleTime() < 90_000) {
-    const needUseKaguyaSkill =
-      !engine.modifierManager.hasModifierByName(
-        enemy,
-        Kaguya.supportSkillModifierName,
-      ) ||
-      !engine.modifierManager.hasModifierByName(
-        eatchel,
-        Amarna.ballisticModifierName,
-      );
-
-    if (needUseKaguyaSkill) {
-      kaguya.useSkillIfPossible("supportSkill");
-    }
-
-    littleSunshine.useSkillIfPossible("supportSkill");
-
-    eatchel.useSkillIfPossible("ultimateSkill");
-    // eatchel.useSKillIfPossible("standardSkill");
-    eatchel.useShotIfPossible("ads");
-    eatchel.usePartialReloadIfCantShot();
-  }
-
-  return engine.historyManager.getPrettified();
+  return engine;
 }

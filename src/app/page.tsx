@@ -2,10 +2,11 @@
 
 import React from "react";
 import { eatchelExample } from "~/lib/example/eatchel";
-import { Accordion, Box, Container, Text } from "@chakra-ui/react";
-import { PrettifiedAction } from "~/app/components/PrettifiedAction";
+import { Box, Container, Text } from "@chakra-ui/react";
+import { AplContextWrapper } from "~/app/components/Apl/AplContextWrapper";
+import { PageContent } from "~/app/PageContent";
 
-const locActions = eatchelExample();
+const engine = eatchelExample();
 export default function Home() {
   return (
     <main>
@@ -27,11 +28,9 @@ export default function Home() {
             set) x3 atk%8.5 x3 sRecovery 12 x3 thermalDmg 7.2
           </Text>
           <Text>Always hit weakpoint, enemy damages you every 3 second</Text>
-          <Accordion allowMultiple>
-            {locActions.map((action, index) => (
-              <PrettifiedAction key={index} action={action} />
-            ))}
-          </Accordion>
+          <AplContextWrapper engine={engine}>
+            <PageContent />
+          </AplContextWrapper>
         </Box>
       </Container>
     </main>
