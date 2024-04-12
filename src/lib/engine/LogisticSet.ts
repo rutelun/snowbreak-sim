@@ -3,6 +3,13 @@ import type { Attribute, AttributesObj } from "./AttributeManager";
 import type { Engine } from "./Engine";
 
 export abstract class LogisticSet {
+  public static readonly logisticName: string;
+  protected abstract class: typeof LogisticSet;
+
+  public get name() {
+    return this.class.logisticName;
+  }
+
   public loadoutAttrs: AttributesObj = {
     defBase: 50 + 50,
     atkBase: 99 + 99,

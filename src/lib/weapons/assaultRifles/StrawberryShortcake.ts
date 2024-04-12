@@ -12,6 +12,7 @@ import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 export class StrawberryShortcake extends AssaultRifleWeapon {
   public static override readonly element: ElementType = "thermal";
   public static override readonly weaponName = "Strawberry Shortcake";
+  public static override readonly rarity = 4;
   protected override class: typeof Weapon = StrawberryShortcake;
 
   private duration = 15_000;

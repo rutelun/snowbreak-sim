@@ -10,28 +10,32 @@ export function AplActionNew() {
 
   const [key, setKey] = useState(0);
 
-  const addAction = useCallback((value: unknown) => {
-    if (value === "" || !value) {
-      return;
-    }
+  const addAction = useCallback(
+    (value: unknown) => {
+      debugger;
+      if (value === "" || !value) {
+        return;
+      }
 
-    const action = possibleActions.find((item) => item.id === value);
-    if (!action) {
-      return;
-    }
+      const action = possibleActions.find((item) => item.id === value);
+      if (!action) {
+        return;
+      }
 
-    setKey((locKey) => locKey + 1);
+      setKey((locKey) => locKey + 1);
 
-    setActionsWithConditions((oldActions) => {
-      return [
-        ...oldActions,
-        {
-          action: { ...action },
-          conditions: [],
-        },
-      ];
-    });
-  }, []);
+      setActionsWithConditions((oldActions) => {
+        return [
+          ...oldActions,
+          {
+            action: { ...action },
+            conditions: [],
+          },
+        ];
+      });
+    },
+    [possibleActions, setActionsWithConditions],
+  );
 
   return (
     <Autocomplete

@@ -12,8 +12,9 @@ import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 
 export class TinyGrains extends ShotgunWeapon {
   public static override readonly element: ElementType = "kinetic";
-  public static override readonly weaponName = "Tiny grains";
+  public static override readonly weaponName = "Tiny Grains";
   protected override class: typeof Weapon = TinyGrains;
+  public static override readonly rarity = 5;
 
   private plannedAction: ActionId | undefined = undefined;
 

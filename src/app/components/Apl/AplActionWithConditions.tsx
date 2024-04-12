@@ -33,7 +33,7 @@ export function AplActionWithConditions({ actionId }: Props) {
         draft[actionId] = prevValue;
       }),
     );
-  }, [canMoveUp, actionId]);
+  }, [canMoveUp, setActionsWithConditions, actionId]);
 
   const canMoveDown = actionId !== totalActions - 1;
   const moveDownItem = useCallback(() => {
@@ -48,7 +48,7 @@ export function AplActionWithConditions({ actionId }: Props) {
         draft[actionId] = prevValue;
       }),
     );
-  }, [canMoveDown, actionId]);
+  }, [canMoveDown, setActionsWithConditions, actionId]);
 
   const deleteItem = useCallback(() => {
     setActionsWithConditions((value) =>
@@ -56,7 +56,7 @@ export function AplActionWithConditions({ actionId }: Props) {
         draft.splice(actionId, 1);
       }),
     );
-  }, [canMoveDown, actionId]);
+  }, [setActionsWithConditions, actionId]);
 
   return (
     <Box

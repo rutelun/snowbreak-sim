@@ -10,6 +10,9 @@ import type {
 } from "../engine/SubscriptionManager";
 
 export class LuxSquad extends LogisticSet {
+  public static override readonly logisticName = "Lux Squad";
+  protected class: typeof LogisticSet = LuxSquad;
+
   private maxStacks = 10;
 
   private currentStacks = 0;

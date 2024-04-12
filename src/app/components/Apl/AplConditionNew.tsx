@@ -13,27 +13,29 @@ export function AplConditionNew({ actionId }: Props) {
   );
 
   const [key, setKey] = useState(0);
-  const addAction = useCallback((value: string | undefined) => {
-    setKey((locKey) => locKey + 1);
+  const addAction = useCallback(
+    (value: string | undefined) => {
+      setKey((locKey) => locKey + 1);
 
-    const condition = possibleConditions.find((item) => item.id === value);
-    if (!condition) {
-      return;
-    }
+      const condition = possibleConditions.find((item) => item.id === value);
+      if (!condition) {
+        return;
+      }
 
-    setActionsWithConditions((oldActions) => {
-      return produce(oldActions, (draft) => {
-        draft[actionId].conditions.push({ ...condition });
+      setActionsWithConditions((oldActions) => {
+        return produce(oldActions, (draft) => {
+          draft[actionId].conditions.push({ ...condition });
+        });
       });
-    });
-  }, []);
+    },
+    [actionId, possibleConditions, setActionsWithConditions],
+  );
 
   return (
     <Autocomplete
-      id="apl-action-new"
       size="small"
       key={key}
-      renderInput={(params) => <TextField {...params} label="Action" />}
+      renderInput={(params) => <TextField {...params} label="Condition" />}
       onChange={(_, newValue) => addAction(newValue?.id)}
       getOptionLabel={(option) => option.description}
       options={possibleConditions}

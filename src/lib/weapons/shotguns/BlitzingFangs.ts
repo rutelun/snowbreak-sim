@@ -9,8 +9,9 @@ import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 
 export class BlitzingFangs extends ShotgunWeapon {
   public static override readonly element: ElementType = "kinetic";
-  public static override readonly weaponName = "BlitzingFangs";
+  public static override readonly weaponName = "Blitzing Fangs";
   protected override class: typeof Weapon = BlitzingFangs;
+  public static override readonly rarity = 5;
 
   private storedHealth = 0;
 

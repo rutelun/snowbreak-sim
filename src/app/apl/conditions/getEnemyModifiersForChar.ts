@@ -1,9 +1,9 @@
-import type { Character } from "~/lib/engine/Character";
 import { Kaguya } from "~/lib/characters/Kaguya/Kaguya";
+import type { FullCharInfo } from "~/app/components/Pickers/types";
 
-export function getEnemyModifiersForChar(char: Character): string[] {
+export function getEnemyModifiersForChar(char: FullCharInfo): string[] {
   const result: string[] = [];
-  if (char instanceof Kaguya) {
+  if (char.char?.id === Kaguya.id) {
     result.push(Kaguya.supportSkillModifierName);
   }
 

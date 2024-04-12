@@ -15,6 +15,9 @@ export class Amarna extends LogisticSet {
   private ballisticDmg = 30;
   private atk = 20;
 
+  public static override readonly logisticName = "Amarna";
+  protected class: typeof LogisticSet = Amarna;
+
   private atkModifier: Modifier = {
     name: "Amarna 3pc atk%",
     durationType: "time",

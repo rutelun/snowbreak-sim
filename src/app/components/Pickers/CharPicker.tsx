@@ -1,5 +1,6 @@
+import type { CharId } from "~/app/utils/pickers/constants";
 import { ALLOWED_CHARS, getCharById } from "~/app/utils/pickers/constants";
-import { useCallback, useState } from "react";
+import { useCallback, useId, useState } from "react";
 import {
   Box,
   Button,
@@ -7,49 +8,139 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   Typography,
 } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import type { CharInfo } from "~/app/components/Pickers/types";
 
-export function CharPicker() {
+type Props = {
+  info: CharInfo | undefined;
+  setInfo: (cb: (data: CharInfo | undefined) => CharInfo | undefined) => void;
+};
+
+export function CharPicker({ info, setInfo }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [chosenCharId, setChosenCharId] = useState<string | undefined>(
-    undefined,
+
+  const onCharClick = useCallback(
+    (locCharId: string) => {
+      setInfo((draft: CharInfo | undefined) => {
+        if (!draft) {
+          draft = {
+            id: locCharId as CharId,
+            manifestation: 0,
+            lvl: 80,
+          };
+        }
+
+        draft.id = locCharId as CharId;
+
+        return draft;
+      });
+      setIsOpen(false);
+    },
+    [setInfo],
   );
 
-  const onCharClick = useCallback((locCharId: string) => {
-    setChosenCharId(locCharId);
-    setIsOpen(false);
-  }, []);
+  const setManifestation = useCallback(
+    (manifestation: 0 | 1 | 2 | 3 | 4 | 5) => {
+      setInfo((draft: CharInfo | undefined) => {
+        if (!draft) {
+          return draft;
+        }
+
+        draft.manifestation = manifestation;
+        return draft;
+      });
+    },
+    [setInfo],
+  );
 
   const chars = ALLOWED_CHARS;
+
+  const manifestId = useId();
+  const levelId = useId();
 
   const getImg = (charId: string) => `/chars/icons/${charId}.png`;
   return (
     <>
-      {chosenCharId ? (
+      {info?.id ? (
         <Box
-          width="114px"
           justifyContent="center"
           alignContent="center"
           display="flex"
-          flexDirection="column"
+          flexDirection="row"
+          gap={1}
         >
           <Box sx={{ cursor: "pointer" }}>
             <img
-              key={chosenCharId}
-              src={getImg(chosenCharId)}
+              width="120px"
+              height="120px"
+              key={info.id}
+              src={getImg(info.id)}
               onClick={() => setIsOpen(true)}
             />
           </Box>
-          <Typography textAlign="center">
-            {getCharById(chosenCharId)?.charName}
-          </Typography>
-          <Typography textAlign="center">
-            {getCharById(chosenCharId)?.charSubName}
-          </Typography>
-          <Typography>Level: 80</Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            flexDirection="column"
+          >
+            <Box>
+              <Typography variant="h6">
+                {getCharById(info.id)?.charName}{" "}
+                {getCharById(info.id)?.charSubName}
+              </Typography>
+              <Typography>
+                {getCharById(info.id)?.element}{" "}
+                {getCharById(info.id)?.weaponType}
+              </Typography>
+            </Box>
+            <Box>
+              <FormControl>
+                <InputLabel id={levelId}>Level</InputLabel>
+                <Select
+                  label="Level"
+                  size="small"
+                  labelId={levelId}
+                  disabled
+                  value={info.lvl}
+                >
+                  <MenuItem value={80}>80</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl>
+                <InputLabel
+                  sx={{ backgroundColor: "white", paddingRight: 1 }}
+                  id={manifestId}
+                >
+                  Manifestation
+                </InputLabel>
+                <Select
+                  label="Manifestation"
+                  size="small"
+                  labelId={manifestId}
+                  value={info.manifestation}
+                  onChange={(e) =>
+                    setManifestation(
+                      Number(e.target.value) as 0 | 1 | 2 | 3 | 4 | 5,
+                    )
+                  }
+                  sx={{ width: "100px" }}
+                >
+                  {([0, 1, 2, 3, 4, 5] as const).map((manifest) => (
+                    <MenuItem key={manifest} value={manifest}>
+                      {manifest}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
         </Box>
       ) : (
         <Box

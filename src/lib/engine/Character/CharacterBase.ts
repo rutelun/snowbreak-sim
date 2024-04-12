@@ -22,9 +22,16 @@ export abstract class CharacterBase extends Creature {
   public static get id() {
     return `${this.charName} ${this.charSubName}`;
   }
+  public get id() {
+    return `${this.name} ${this.subName}`;
+  }
 
   public get name(): string {
     return this.class.charName;
+  }
+
+  public get subName(): string {
+    return this.class.charSubName;
   }
   public get weaponType(): WeaponType {
     return this.class.weaponType;

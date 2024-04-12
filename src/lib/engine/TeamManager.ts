@@ -25,6 +25,15 @@ export class TeamManager {
     return this.activeChar;
   }
 
+  public getCharById(id: string | undefined): Character {
+    const char = this.team.find((locChar) => locChar.id === id);
+    if (!char) {
+      throw new Error(`no char with id ${id}`);
+    }
+
+    return char;
+  }
+
   public getTeam(): Character[] {
     return this.team;
   }

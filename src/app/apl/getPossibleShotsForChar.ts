@@ -1,9 +1,9 @@
-import type { Character } from "~/lib/engine/Character";
 import type { ShotType } from "~/lib/engine/AttributeManager";
-import { ShotgunWeapon } from "~/lib/engine/ShotgunWeapon";
+import type { FullCharInfo } from "~/app/components/Pickers/types";
+import { getCharById } from "~/app/utils/pickers/constants";
 
-export function getPossibleShotsForChar(char: Character): ShotType[] {
-  if (char.weapon instanceof ShotgunWeapon) {
+export function getPossibleShotsForChar(char: FullCharInfo): ShotType[] {
+  if (getCharById(char.char?.id)?.weaponType === "shotgun") {
     return ["ads", "hip-fire"];
   }
 

@@ -1,18 +1,19 @@
-import type { Engine } from "~/lib/engine/Engine";
 import type { SkillType } from "~/lib/engine/AttributeManager";
-import type { Character } from "~/lib/engine/Character";
 import type { AplConditionComparatorBase } from "~/app/apl/types";
+import type { FullCharInfo } from "~/app/components/Pickers/types";
 
 export function buildAplCondSkillRemainingCooldown(
-  engine: Engine,
-  char: Character,
+  char: FullCharInfo,
   skillType: SkillType,
 ): AplConditionComparatorBase {
   return {
     type: "comparator",
-    id: `${char.name}_${skillType}_remaining_cooldown`,
-    description: `${char.name} ${skillType} remaining cooldown`,
-    getValue: () => char.getSkillRemainingCooldown(skillType) / 1_000,
+    id: `${char.char?.id}_${skillType}_remaining_cooldown`,
+    description: `${char.char?.id} ${skillType} remaining cooldown`,
+    getValue: (engine) =>
+      engine.teamManager
+        .getCharById(char.char?.id)
+        .getSkillRemainingCooldown(skillType) / 1_000,
     suffix: "s",
   };
 }

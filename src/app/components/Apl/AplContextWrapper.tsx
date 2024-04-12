@@ -1,4 +1,4 @@
-import type { Engine } from "~/lib/engine/Engine";
+"use client";
 import type { FC, PropsWithChildren } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { buildPossibleActions } from "~/app/apl/actions/buildPossibleActions";
@@ -12,24 +12,36 @@ import type { AplContextType } from "~/app/context/AplContext";
 import { AplContext } from "~/app/context/AplContext";
 import type { PrettifiedActionType } from "~/lib/engine/HistoryManager";
 import { runApl } from "~/app/apl/runApl";
+import type { FullCharInfo } from "~/app/components/Pickers/types";
 
-type Props = {
-  engine: Engine;
-};
-export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
-  engine,
-  children,
-}) => {
+export const AplContextWrapper: FC<PropsWithChildren> = ({ children }) => {
+  const [charsInfo, setCharsInfo] = useState<FullCharInfo[]>(() => {
+    if (!window) {
+      return [];
+    }
+
+    const localStorageValue = window.localStorage.getItem("charsInfo");
+    if (!localStorageValue) {
+      return [];
+    }
+
+    return JSON.parse(localStorageValue);
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("charsInfo", JSON.stringify(charsInfo));
+  }, [charsInfo]);
+
   const possibleActions: AplActionUi[] = useMemo(
     () =>
-      buildPossibleActions(engine).map((action) => ({
+      buildPossibleActions(charsInfo).map((action) => ({
         ...action,
         enabled: true,
       })),
-    [engine],
+    [charsInfo],
   );
   const possibleConditions = useMemo(() => {
-    return buildPossibleAplConditions(engine).map(
+    return buildPossibleAplConditions(charsInfo).map(
       (condition): AplConditionUi => {
         if (condition.type === "select") {
           return {
@@ -54,11 +66,15 @@ export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
         throw new Error("unknown type");
       },
     );
-  }, [engine]);
+  }, [charsInfo]);
 
   const [actionsWithConditions, setActionsWithConditions] = useState<
     AplActionWithConditionsUi[]
   >(() => {
+    if (!window) {
+      return [];
+    }
+
     const localStorageValue = window.localStorage.getItem(
       "actionsWithConditions",
     );
@@ -81,10 +97,13 @@ export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
   >([]);
 
   const start = useCallback(() => {
-    engine.timeManager.startBattle();
-    runApl({ engine, apl: actionsWithConditions, expectedBattleTime: 60_000 });
+    const engine = runApl({
+      charsInfo,
+      apl: actionsWithConditions,
+      expectedBattleTime: 60_000,
+    });
     setPrettifiedActions(engine.historyManager.getPrettified());
-  }, [engine, actionsWithConditions]);
+  }, [charsInfo, actionsWithConditions]);
 
   const contextData: AplContextType = useMemo(
     () => ({
@@ -94,12 +113,16 @@ export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
       setActionsWithConditions,
       start,
       prettifiedActions,
+      charsInfo,
+      setCharsInfo,
     }),
     [
       possibleActions,
       possibleConditions,
       actionsWithConditions,
       setActionsWithConditions,
+      charsInfo,
+      setCharsInfo,
       start,
       prettifiedActions,
     ],

@@ -4,7 +4,6 @@ import type {
   Modifier,
 } from "../../engine/ModifierManager";
 import type { Engine } from "../../engine/Engine";
-import type { ActionId } from "../../engine/TimeManager";
 import type { ElementType } from "../../engine/AttributeManager";
 import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
 import { PistolWeapon } from "~/lib/engine/PIstolWeapon";
@@ -14,7 +13,7 @@ export class PrismaticIgniter extends PistolWeapon {
   public static override readonly element: ElementType = "thermal";
   public static override readonly weaponName = "Prismatic Igniter";
   protected override class: typeof Weapon = PrismaticIgniter;
-  private plannedAction: ActionId | undefined = undefined;
+  public static override readonly rarity = 4;
 
   private duration = 15_000;
 

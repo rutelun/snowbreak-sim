@@ -33,7 +33,7 @@ export function AplCondition({ actionId, conditionId }: Props) {
         }),
       );
     },
-    [actionId, conditionId],
+    [actionId, conditionId, setActionsWithConditions],
   );
 
   const onChangeComparatorValue = useCallback(
@@ -48,7 +48,7 @@ export function AplCondition({ actionId, conditionId }: Props) {
         }),
       );
     },
-    [actionId, conditionId],
+    [actionId, conditionId, setActionsWithConditions],
   );
 
   const onChangeComparatorValueType = useCallback(
@@ -62,7 +62,7 @@ export function AplCondition({ actionId, conditionId }: Props) {
         }),
       );
     },
-    [actionId, conditionId],
+    [actionId, conditionId, setActionsWithConditions],
   );
   const removeCondition = useCallback(() => {
     setActionsWithConditions((actions) =>
@@ -70,7 +70,7 @@ export function AplCondition({ actionId, conditionId }: Props) {
         draft[actionId].conditions.splice(conditionId, 1);
       }),
     );
-  }, [actionId, conditionId]);
+  }, [actionId, conditionId, setActionsWithConditions]);
 
   return (
     <Box>

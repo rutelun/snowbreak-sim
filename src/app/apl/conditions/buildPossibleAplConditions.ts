@@ -1,4 +1,3 @@
-import type { Engine } from "~/lib/engine/Engine";
 import { getEnemyModifiersForChar } from "~/app/apl/conditions/getEnemyModifiersForChar";
 import { getActiveCharModifiersForChar } from "~/app/apl/conditions/getActiveCharModifiersForChar";
 import type { AplConditionBase } from "~/app/apl/types";
@@ -8,9 +7,11 @@ import { buildAplCondActiveCharHasModifier } from "~/app/apl/conditions/buildApl
 import { getPossibleSkillsForChar } from "~/app/apl/getPossibleSkillsForChar";
 import { buildAplCondEnemyDoesntHaveModifier } from "~/app/apl/conditions/buildAplCondEnemyDoesntHaveModifier";
 import { buildAplCondActiveCharDoesntHaveModifier } from "~/app/apl/conditions/buildAplCondActiveCharDoesntHaveModifier";
+import type { FullCharInfo } from "~/app/components/Pickers/types";
 
-export function buildPossibleAplConditions(engine: Engine): AplConditionBase[] {
-  const chars = engine.teamManager.getTeam();
+export function buildPossibleAplConditions(
+  chars: FullCharInfo[],
+): AplConditionBase[] {
   const enemyModifiers: string[] = [];
   const activeCharModifiers: string[] = [];
   chars.forEach((char) => {
@@ -22,23 +23,17 @@ export function buildPossibleAplConditions(engine: Engine): AplConditionBase[] {
   const activeCharModifiersSet = new Set(activeCharModifiers);
 
   const result: AplConditionBase[] = [
-    buildAplCondEnemyHasModifier(engine, [...enemyModifiersSet.values()]),
-    buildAplCondEnemyDoesntHaveModifier(engine, [
-      ...enemyModifiersSet.values(),
-    ]),
-    buildAplCondActiveCharHasModifier(engine, [
-      ...activeCharModifiersSet.values(),
-    ]),
-    buildAplCondActiveCharDoesntHaveModifier(engine, [
+    buildAplCondEnemyHasModifier([...enemyModifiersSet.values()]),
+    buildAplCondEnemyDoesntHaveModifier([...enemyModifiersSet.values()]),
+    buildAplCondActiveCharHasModifier([...activeCharModifiersSet.values()]),
+    buildAplCondActiveCharDoesntHaveModifier([
       ...activeCharModifiersSet.values(),
     ]),
   ];
 
   chars.forEach((char) => {
     getPossibleSkillsForChar(char).forEach((skillType) => {
-      result.push(
-        ...[buildAplCondSkillRemainingCooldown(engine, char, skillType)],
-      );
+      result.push(...[buildAplCondSkillRemainingCooldown(char, skillType)]);
     });
   });
 

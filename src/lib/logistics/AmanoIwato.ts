@@ -11,6 +11,9 @@ import type {
 export class AmanoIwato extends LogisticSet {
   private maxStacks = 5;
 
+  public static override readonly logisticName = "Amano-Iwato";
+  protected class: typeof LogisticSet = AmanoIwato;
+
   private currentStacks = 0;
 
   private adsBallisticDmgPerStack = 10;

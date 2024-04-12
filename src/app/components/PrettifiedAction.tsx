@@ -14,7 +14,7 @@ export function PrettifiedAction({ action }: Props) {
   const actionBattleTime = (action.battleTime / 1_000).toFixed(2);
   if (action.type === "foreground") {
     return (
-      <Accordion>
+      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
         <AccordionSummary>
           <Typography variant="h6" textAlign="left">
             <Stack gap={2} direction="row" alignItems="center">

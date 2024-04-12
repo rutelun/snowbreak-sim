@@ -5,15 +5,22 @@ import type { Attribute, ElementType, ShotType } from "./AttributeManager";
 import type { WeaponType } from "./types";
 import type { Character } from "./Character";
 
+export type WeaponTier = 1 | 2 | 3 | 4 | 5;
+
 export type WeaponOpts = {
-  tier: 1 | 2 | 3 | 4 | 5;
+  tier: WeaponTier;
   lvl: 80;
 };
 export abstract class Weapon {
   public static readonly element: ElementType;
   public static readonly type: WeaponType;
   public static readonly weaponName: string;
+  public static readonly rarity: 4 | 5;
   protected abstract class: typeof Weapon;
+
+  public static get maxTier(): WeaponTier {
+    return this.rarity === 4 ? 5 : 2;
+  }
 
   public get element(): ElementType {
     return this.class.element;

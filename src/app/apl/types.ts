@@ -1,8 +1,10 @@
+import type { Engine } from "~/lib/engine/Engine";
+
 export type AplConditionSelectBase = {
   type: "select";
   id: string;
   description: string;
-  check: (value: string) => boolean;
+  check: (engine: Engine, value: string) => boolean;
   options: string[];
 };
 
@@ -23,7 +25,7 @@ export type AplConditionComparatorBase = {
   type: "comparator";
   id: string;
   description: string;
-  getValue: () => number;
+  getValue: (engine: Engine) => number;
   suffix?: string;
 };
 
@@ -52,8 +54,8 @@ export type AplConditionUi = AplConditionSelectUi | AplConditionComparatorUi;
 export type AplAction = {
   id: string;
   description: string;
-  action: () => void;
-  check?: () => boolean;
+  action: (engine: Engine) => void;
+  check?: (engine: Engine) => boolean;
 };
 
 export type AplActionUi = {
