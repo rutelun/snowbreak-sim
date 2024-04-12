@@ -12,6 +12,7 @@ type Props = {
 };
 export function FullCharPicker({ index }: Props) {
   const info = useAplContext((c) => c.charsInfo[index]);
+  const allCharsinfo = useAplContext((c) => c.charsInfo);
   const setCharsInfo = useAplContext((c) => c.setCharsInfo);
 
   const char = info?.char?.id ? getCharById(info?.char?.id) : undefined;
@@ -27,6 +28,7 @@ export function FullCharPicker({ index }: Props) {
         }}
       >
         <CharPicker
+          excludeChars={allCharsinfo.map((charInfo) => charInfo.char?.id)}
           info={info?.char}
           setInfo={(data) =>
             setCharsInfo((oldInfo) =>

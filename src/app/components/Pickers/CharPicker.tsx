@@ -21,9 +21,10 @@ import type { CharInfo } from "~/app/components/Pickers/types";
 type Props = {
   info: CharInfo | undefined;
   setInfo: (cb: (data: CharInfo | undefined) => CharInfo | undefined) => void;
+  excludeChars: (CharId | undefined)[];
 };
 
-export function CharPicker({ info, setInfo }: Props) {
+export function CharPicker({ info, setInfo, excludeChars }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const onCharClick = useCallback(
@@ -60,7 +61,9 @@ export function CharPicker({ info, setInfo }: Props) {
     [setInfo],
   );
 
-  const chars = ALLOWED_CHARS;
+  const chars = ALLOWED_CHARS.filter(
+    (char) => !excludeChars.includes(char.id) || info?.id === char.id,
+  );
 
   const manifestId = useId();
   const levelId = useId();

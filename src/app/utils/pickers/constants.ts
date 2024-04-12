@@ -12,7 +12,7 @@ import { LuxSquad } from "~/lib/logistics/LuxSquad";
 export const ALLOWED_CHARS = [Eatchel, Kaguya, LittleSunshine];
 const ALLOWED_CHARS_MAP = new Map(ALLOWED_CHARS.map((char) => [char.id, char]));
 
-export type CharId = (typeof ALLOWED_CHARS)[number]["charName"];
+export type CharId = (typeof ALLOWED_CHARS)[number]["id"];
 
 export function getCharById(
   id: string | undefined,
