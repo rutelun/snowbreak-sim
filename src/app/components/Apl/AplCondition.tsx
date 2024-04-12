@@ -1,16 +1,15 @@
-import {
-  Box,
-  Checkbox,
-  Grid,
-  IconButton,
-  Input,
-  Select,
-  Text,
-} from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
 import { useAplContext } from "~/app/context/AplContext";
 import { useCallback } from "react";
 import { produce } from "immer";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 type Props = {
   actionId: number;
@@ -38,12 +37,13 @@ export function AplCondition({ actionId, conditionId }: Props) {
   );
 
   const onChangeComparatorValue = useCallback(
-    (newValue: number) => {
+    (newValue: string) => {
       setActionsWithConditions((actions) =>
         produce(actions, (draft) => {
           const locCondition = draft[actionId].conditions[conditionId];
           if (locCondition.type === "comparator") {
-            locCondition.comparisonValue = newValue;
+            locCondition.comparisonValue =
+              newValue !== "" ? Number(newValue) : undefined;
           }
         }),
       );
@@ -73,62 +73,67 @@ export function AplCondition({ actionId, conditionId }: Props) {
   }, [actionId, conditionId]);
 
   return (
-    <Box pl={2}>
-      <Grid templateColumns="auto 1fr auto">
-        <Checkbox defaultChecked pt={1} pb={1}>
-          <Text size="md" textAlign="left" width="max-content" pr={4}>
-            {item.description}
-          </Text>
-        </Checkbox>
+    <Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "auto 1fr auto",
+          alignItems: "center",
+        }}
+      >
+        <FormControlLabel
+          control={<Checkbox defaultChecked />}
+          label={`${item.description}`}
+        />
         {item.type === "select" ? (
           <Select
             placeholder="Select"
-            size="sm"
+            size="small"
             value={item.currentValue}
             onChange={(e) => onChangeSelectValue(e.target.value)}
           >
             {item.options.map((optionValue) => (
-              <option value={optionValue} key={optionValue}>
+              <MenuItem value={optionValue} key={optionValue}>
                 {optionValue}
-              </option>
+              </MenuItem>
             ))}
           </Select>
         ) : null}
         {item.type === "comparator" ? (
-          <Grid templateColumns="auto auto">
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "auto auto",
+            }}
+          >
             <Select
-              width="max-content"
-              size="sm"
+              size="small"
               value={item.comparisonType}
               onChange={(e) =>
                 onChangeComparatorValueType(e.target.value as "<=" | ">=")
               }
             >
               {[">=", "<="].map((optionValue) => (
-                <option value={optionValue} key={optionValue}>
+                <MenuItem value={optionValue} key={optionValue}>
                   {optionValue}
-                </option>
+                </MenuItem>
               ))}
             </Select>
-            <Input
-              defaultValue={0}
-              size="sm"
+            <TextField
+              sx={{ marginLeft: 1 }}
+              size="small"
               type="number"
-              value={item.comparisonValue}
-              onChange={(e) => onChangeComparatorValue(Number(e.target.value))}
+              value={item.comparisonValue ?? null}
+              onChange={(e) => onChangeComparatorValue(e.target.value)}
             />
-          </Grid>
+          </Box>
         ) : null}
-        <IconButton
+        <Close
           onClick={removeCondition}
-          justifySelf="flex-end"
-          variant="ghost"
-          isRound={true}
-          colorScheme="red"
+          sx={{ color: "red", marginLeft: 1 }}
           aria-label="remove condition"
-          icon={<CloseIcon />}
         />
-      </Grid>
+      </Box>
     </Box>
   );
 }

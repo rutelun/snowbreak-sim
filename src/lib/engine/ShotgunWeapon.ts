@@ -11,7 +11,7 @@ const ENERGY_PER_PALLET_FOR_RATE_OF_FIRE = new Map([
 ]);
 
 export abstract class ShotgunWeapon extends Weapon {
-  public override readonly type: WeaponType = "shotgun";
+  public static override readonly type: WeaponType = "shotgun";
 
   public override shot(type: ShotType) {
     const makeShot = () => {
@@ -61,10 +61,6 @@ export abstract class ShotgunWeapon extends Weapon {
     }
   }
 
-  public override canReload(): boolean {
-    return this.currentAmmo < this.ammoCapacity;
-  }
-
   public override partialReload() {
     if (this.currentAmmo >= this.ammoCapacity) {
       return;
@@ -79,6 +75,10 @@ export abstract class ShotgunWeapon extends Weapon {
       description: "Partial shotgun reload",
       caster: this.owner,
     });
+  }
+
+  public override canReload(): boolean {
+    return this.currentAmmo < this.ammoCapacity;
   }
 
   public override canShot(): boolean {

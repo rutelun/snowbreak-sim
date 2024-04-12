@@ -59,7 +59,9 @@ export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
   const [actionsWithConditions, setActionsWithConditions] = useState<
     AplActionWithConditionsUi[]
   >(() => {
-    const localStorageValue = localStorage.getItem("actionsWithConditions");
+    const localStorageValue = window.localStorage.getItem(
+      "actionsWithConditions",
+    );
     if (!localStorageValue) {
       return [];
     }
@@ -68,7 +70,7 @@ export const AplContextWrapper: FC<PropsWithChildren<Props>> = ({
   });
 
   useEffect(() => {
-    localStorage.setItem(
+    window.localStorage.setItem(
       "actionsWithConditions",
       JSON.stringify(actionsWithConditions),
     );

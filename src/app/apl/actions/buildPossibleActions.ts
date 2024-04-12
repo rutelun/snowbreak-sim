@@ -2,6 +2,11 @@ import type { AplAction } from "~/app/apl/types";
 import type { Engine } from "~/lib/engine/Engine";
 import { getPossibleSkillsForChar } from "~/app/apl/getPossibleSkillsForChar";
 import { getPossibleShotsForChar } from "~/app/apl/getPossibleShotsForChar";
+import type { CharName } from "~/app/utils/pickers/constants";
+
+export type CharInfo = {
+  name: CharName;
+};
 
 export function buildPossibleActions(engine: Engine): AplAction[] {
   const result: AplAction[] = [];

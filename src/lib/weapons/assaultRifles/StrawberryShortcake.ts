@@ -7,13 +7,12 @@ import type { Engine } from "../../engine/Engine";
 import type { ElementType } from "../../engine/AttributeManager";
 import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
 import { AssaultRifleWeapon } from "~/lib/engine/AssaultRifleWeapon";
+import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 
-type Opts = {
-  tier: 1 | 2 | 3 | 4 | 5;
-  lvl: 80;
-};
 export class StrawberryShortcake extends AssaultRifleWeapon {
-  element: ElementType = "thermal";
+  public static override readonly element: ElementType = "thermal";
+  public static override readonly weaponName = "Strawberry Shortcake";
+  protected override class: typeof Weapon = StrawberryShortcake;
 
   private duration = 15_000;
 
@@ -41,10 +40,8 @@ export class StrawberryShortcake extends AssaultRifleWeapon {
 
   private intializedModifier: InitializedModifier | undefined = undefined;
 
-  public constructor(engine: Engine, opts: Opts) {
-    super(engine);
-    this.tier = opts.tier;
-    this.lvl = opts.lvl;
+  public constructor(engine: Engine, opts: WeaponOpts) {
+    super(engine, opts);
     this.rateOfFire = 75;
     this.ammoCapacity = 6;
     this.compability = 146.46;

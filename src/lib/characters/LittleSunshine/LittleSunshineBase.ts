@@ -1,21 +1,10 @@
 import type { CharacterOpts } from "../../engine/Character";
 import { Character } from "../../engine/Character";
 import type { Engine } from "../../engine/Engine";
-import type {
-  Attribute,
-  ElementType,
-  SkillType,
-} from "../../engine/AttributeManager";
-import type { WeaponType } from "../../engine/types";
+import type { Attribute, SkillType } from "../../engine/AttributeManager";
 
 export abstract class LittleSunshineBase extends Character {
-  public override name = "Little Sunshine";
-
-  public readonly weaponType: WeaponType = "assaultRifle";
-
   protected override loadoutAttrs: { [attr in Attribute]?: number };
-
-  public override element: ElementType = "thermal";
 
   protected energyCost: Record<SkillType, number> = {
     standardSkill: 15,

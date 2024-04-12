@@ -1,13 +1,14 @@
 import { Formula } from "~/lib/engine/Formula";
-import { Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import { Link, Typography } from "@mui/material";
+import { green, purple, grey, yellow } from "@mui/material/colors";
 
 type Props = {
   formula: Formula;
   deep?: number;
 };
 
-const colorDeep = ["yellow.50", "green.50", "purple.50", "teal.50", "pink.50"];
+const colorDeep = [yellow[50], green[50], purple[50]];
 
 const isLowerPriority = (previousAction: string, newAction: string) => {
   return ["+", "-"].includes(newAction) && ["*", "/"].includes(previousAction);
@@ -26,50 +27,48 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
       {showSummarize ? (
         deep === 0 ? (
           <>
-            <Text
-              color="blue.800"
-              as="span"
-              borderBottomStyle="dashed"
-              borderBottomWidth={2}
+            <Link
+              variant="body1"
+              style={{ display: "inline", cursor: "pointer" }}
               onClick={() => {
                 setIsDetailsVisible((val) => !val);
               }}
             >
               {formula.description}: {resultValue}
-            </Text>
+            </Link>
           </>
         ) : (
           <>
-            <Text color="gray.800" as="span">
+            <Typography variant="body1" style={{ display: "inline" }}>
               {resultValue}
-            </Text>
+            </Typography>
             (
-            <Text
-              color="blue.800"
-              as="span"
-              borderBottomStyle="dashed"
-              borderBottomWidth={2}
+            <Link
+              variant="body1"
+              style={{ display: "inline", cursor: "pointer" }}
               onClick={() => {
                 setIsDetailsVisible((val) => !val);
               }}
             >
               {formula.description}
-            </Text>
+            </Link>
             )
           </>
         )
       ) : (
         ""
       )}
-      <Text
-        color="gray.600"
-        as="span"
-        display={isDetailsVisible ? "inline" : "none"}
-        background={colorDeep[deep % colorDeep.length]}
+      <Typography
+        variant="body1"
+        style={{
+          display: isDetailsVisible ? "inline" : "none",
+          backgroundColor: colorDeep[deep % colorDeep.length],
+          cursor: "default",
+        }}
       >
         {showSummarize && formula.parts.length > 0 ? "[" : ""}
         {formula.parts.map((part, index) => (
-          <span key={index}>
+          <Fragment key={index}>
             {part instanceof Formula ? (
               <>
                 {isLowerPriority(formula.action, part.action) &&
@@ -95,19 +94,22 @@ export function FormulaViewer({ formula, deep = 0 }: Props) {
                 )}
                 {part.visibleAsPercent ? "%" : ""}
                 {part.description ? (
-                  <Text color="gray.400" as="span">
-                    ({part.description})
-                  </Text>
+                  <Typography
+                    variant="body2"
+                    style={{ display: "inline", color: grey[700] }}
+                  >
+                    [{part.description}]
+                  </Typography>
                 ) : (
                   ""
                 )}
               </>
             )}
             {index !== formula.parts.length - 1 ? formula.action : ""}
-          </span>
+          </Fragment>
         ))}
         {showSummarize && formula.parts.length > 0 ? "]" : ""}
-      </Text>
+      </Typography>
     </>
   );
 }

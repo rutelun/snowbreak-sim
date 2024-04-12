@@ -1,9 +1,10 @@
 import { ShotgunWeapon } from "../../engine/ShotgunWeapon";
+import type { Weapon } from "~/lib/engine/Weapon";
 
 export class DummyWeapon extends ShotgunWeapon {
-  type = "shotgun" as const;
+  public static override type = "shotgun" as const;
 
-  element = "kinetic" as const;
-
-  public override readonly tier = 1;
+  public static override element = "kinetic" as const;
+  public static override name: "Dummy Weapon";
+  protected override class: typeof Weapon = DummyWeapon;
 }

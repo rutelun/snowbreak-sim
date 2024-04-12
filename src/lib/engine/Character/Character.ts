@@ -18,7 +18,7 @@ export abstract class Character extends CharacterWithShot {
 
   public constructor(engine: Engine, opts: CharacterOpts) {
     super(engine, opts);
-    this.weapon = new DummyWeapon(this.engine);
+    this.weapon = new DummyWeapon(this.engine, { lvl: 80, tier: 1 });
     this.weapon.equip(this);
 
     this.engine.teamManager.addChar(this);

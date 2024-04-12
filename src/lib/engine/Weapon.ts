@@ -5,10 +5,25 @@ import type { Attribute, ElementType, ShotType } from "./AttributeManager";
 import type { WeaponType } from "./types";
 import type { Character } from "./Character";
 
+export type WeaponOpts = {
+  tier: 1 | 2 | 3 | 4 | 5;
+  lvl: 80;
+};
 export abstract class Weapon {
-  public abstract readonly element: ElementType;
+  public static readonly element: ElementType;
+  public static readonly type: WeaponType;
+  public static readonly weaponName: string;
+  protected abstract class: typeof Weapon;
 
-  public abstract readonly type: WeaponType;
+  public get element(): ElementType {
+    return this.class.element;
+  }
+  public get type(): WeaponType {
+    return this.class.type;
+  }
+  public get name(): string {
+    return this.class.weaponName;
+  }
 
   public tier: 1 | 2 | 3 | 4 | 5 = 1;
 
@@ -36,7 +51,13 @@ export abstract class Weapon {
     [stat in Attribute]?: number;
   } = {};
 
-  public constructor(protected engine: Engine) {}
+  public constructor(
+    protected engine: Engine,
+    opts: WeaponOpts,
+  ) {
+    this.lvl = opts.lvl;
+    this.tier = opts.tier;
+  }
 
   public equip(owner: Character) {
     this.owner = owner;

@@ -32,13 +32,13 @@ export type AplConditionComparatorUi = {
   description: string;
   type: "comparator";
   comparisonType: ">=" | "<=";
-  comparisonValue: number;
+  comparisonValue: number | undefined;
   enabled: boolean;
 };
 
 export type AplConditionComparator = AplConditionComparatorBase & {
   comparisonType: ">=" | "<=";
-  comparisonValue: number;
+  comparisonValue: number | undefined;
 };
 
 export type AplConditionBase =

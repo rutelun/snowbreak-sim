@@ -1,8 +1,16 @@
 import { EatchelWithUltimateSkill } from "./EatchelWithUltimateSkill";
 import type { InitializedModifier } from "~/lib/engine/ModifierManager";
-import type { ShotType, SkillType } from "~/lib/engine/AttributeManager";
+import type { ElementType } from "~/lib/engine/AttributeManager";
+import type { CharacterBase } from "~/lib/engine/Character/CharacterBase";
+import type { WeaponType } from "~/lib/engine/types";
 
 export class Eatchel extends EatchelWithUltimateSkill {
+  protected class: typeof CharacterBase = Eatchel;
+  public static override readonly charName = "Eatchel";
+  public static override readonly charSubName = "The Cub";
+  public static override readonly weaponType: WeaponType = "shotgun";
+  public static override readonly element: ElementType = "kinetic";
+
   private deiwosBase = 20;
   private deiwosPer100Aligment = 6;
 
@@ -36,13 +44,5 @@ export class Eatchel extends EatchelWithUltimateSkill {
     }
 
     super.destroy();
-  }
-
-  public allowedToUseSkills(): SkillType[] {
-    return ["supportSkill", "standardSkill", "ultimateSkill"];
-  }
-
-  public allowedToUseShots(): ShotType[] {
-    return ["ads", "hip-fire"];
   }
 }

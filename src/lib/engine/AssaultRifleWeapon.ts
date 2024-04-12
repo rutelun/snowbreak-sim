@@ -3,7 +3,7 @@ import type { WeaponType } from "./types";
 import type { ShotType } from "./AttributeManager";
 
 export abstract class AssaultRifleWeapon extends Weapon {
-  public override readonly type: WeaponType = "assaultRifle";
+  public static override readonly type: WeaponType = "assaultRifle";
 
   public override shot(_type: ShotType) {
     throw new Error("shot isnt implemented");

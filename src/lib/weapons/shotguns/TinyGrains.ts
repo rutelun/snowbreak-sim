@@ -8,13 +8,12 @@ import type { Engine } from "../../engine/Engine";
 import type { ActionId } from "../../engine/TimeManager";
 import type { ElementType } from "../../engine/AttributeManager";
 import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
+import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 
-type Opts = {
-  tier: 1 | 2;
-  lvl: 80;
-};
 export class TinyGrains extends ShotgunWeapon {
-  element: ElementType = "kinetic";
+  public static override readonly element: ElementType = "kinetic";
+  public static override readonly weaponName = "Tiny grains";
+  protected override class: typeof Weapon = TinyGrains;
 
   private plannedAction: ActionId | undefined = undefined;
 
@@ -45,10 +44,8 @@ export class TinyGrains extends ShotgunWeapon {
   private dmgTakenModifierInitialized: InitializedModifier | undefined =
     undefined;
 
-  public constructor(engine: Engine, opts: Opts) {
-    super(engine);
-    this.tier = opts.tier;
-    this.lvl = opts.lvl;
+  public constructor(engine: Engine, opts: WeaponOpts) {
+    super(engine, opts);
     this.rateOfFire = 60;
     this.ammoCapacity = 7;
     this.compability = 41;

@@ -1,7 +1,8 @@
 import { useAplContext } from "~/app/context/AplContext";
-import { List, ListItem } from "@chakra-ui/react";
 import { AplConditionNew } from "~/app/components/Apl/AplConditionNew";
 import { AplCondition } from "~/app/components/Apl/AplCondition";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 type Props = {
   actionId: number;
@@ -13,8 +14,8 @@ export function AplConditions({ actionId }: Props) {
   );
 
   return (
-    <List spacing={2} pl={2}>
-      <ListItem>
+    <List>
+      <ListItem sx={{ display: "block" }}>
         {conditions.map((_condition, index) => (
           <AplCondition actionId={actionId} conditionId={index} key={index} />
         ))}

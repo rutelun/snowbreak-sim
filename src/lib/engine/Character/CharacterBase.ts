@@ -8,9 +8,34 @@ import type { SkillLvl } from "~/lib/utils/getSkillValueByLevel";
 
 export type Manifestation = 0 | 1 | 2 | 3 | 4 | 5;
 export abstract class CharacterBase extends Creature {
-  public abstract readonly name: string;
+  public static readonly charName: string;
+  public static readonly charSubName: string;
 
-  public abstract element: ElementType;
+  public static readonly weaponType: WeaponType;
+
+  public static readonly element: ElementType;
+
+  public static readonly mainAttribute: Attribute;
+
+  protected abstract class: typeof CharacterBase;
+
+  public static get id() {
+    return `${this.charName} ${this.charSubName}`;
+  }
+
+  public get name(): string {
+    return this.class.charName;
+  }
+  public get weaponType(): WeaponType {
+    return this.class.weaponType;
+  }
+  public get element(): ElementType {
+    return this.class.element;
+  }
+
+  public get mainAttribute(): Attribute {
+    return this.class.mainAttribute;
+  }
 
   public manifestation: Manifestation;
 
@@ -21,8 +46,6 @@ export abstract class CharacterBase extends Creature {
   };
 
   public abstract weapon: Weapon;
-
-  public abstract readonly weaponType: WeaponType;
 
   public skillLevel: Record<SkillType, SkillLvl> = {
     standardSkill: 4,
@@ -36,7 +59,6 @@ export abstract class CharacterBase extends Creature {
     this.manifestation = opts.manifestation;
   }
 
-  public abstract equipWeapon(weapon: Weapon): void;
   public abstract equipWeapon(weapon: Weapon): void;
 
   public onBattleStart(): void {}

@@ -1,20 +1,9 @@
 import type { CharacterOpts } from "../../engine/Character";
 import { Character } from "../../engine/Character";
 import type { Engine } from "../../engine/Engine";
-import type {
-  Attribute,
-  ElementType,
-  SkillType,
-} from "../../engine/AttributeManager";
-import type { WeaponType } from "../../engine/types";
+import type { Attribute, SkillType } from "../../engine/AttributeManager";
 
 export abstract class EatchelBase extends Character {
-  public override name = "Eatchel";
-
-  public readonly weaponType: WeaponType = "shotgun";
-
-  public override element: ElementType = "kinetic";
-
   protected override loadoutAttrs: { [attr in Attribute]?: number };
 
   protected energyCost: Record<SkillType, number> = {

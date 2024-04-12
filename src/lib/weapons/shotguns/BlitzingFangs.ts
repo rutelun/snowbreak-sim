@@ -5,13 +5,12 @@ import type { Engine } from "../../engine/Engine";
 import type { ActionId } from "../../engine/TimeManager";
 import type { ElementType } from "../../engine/AttributeManager";
 import { getValueByWeaponTier } from "~/lib/utils/getValueByWeaponTier";
+import type { Weapon, WeaponOpts } from "~/lib/engine/Weapon";
 
-type Opts = {
-  tier: 1 | 2;
-  lvl: 80;
-};
 export class BlitzingFangs extends ShotgunWeapon {
-  element: ElementType = "kinetic";
+  public static override readonly element: ElementType = "kinetic";
+  public static override readonly weaponName = "BlitzingFangs";
+  protected override class: typeof Weapon = BlitzingFangs;
 
   private storedHealth = 0;
 
@@ -61,10 +60,8 @@ export class BlitzingFangs extends ShotgunWeapon {
     },
   ];
 
-  public constructor(engine: Engine, opts: Opts) {
-    super(engine);
-    this.tier = opts.tier;
-    this.lvl = opts.lvl;
+  public constructor(engine: Engine, opts: WeaponOpts) {
+    super(engine, opts);
     this.rateOfFire = 60;
     this.ammoCapacity = 7;
     this.compability = 41;

@@ -1,7 +1,6 @@
 import { useAplContext } from "~/app/context/AplContext";
-import type { ChangeEvent } from "react";
-import { useCallback, useRef } from "react";
-import { Select } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
+import { Autocomplete, TextField } from "@mui/material";
 
 export function AplActionNew() {
   const possibleActions = useAplContext((c) => c.possibleActions);
@@ -9,22 +8,19 @@ export function AplActionNew() {
     (c) => c.setActionsWithConditions,
   );
 
-  const ref = useRef<HTMLSelectElement>(null);
-  const addAction = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    if (value === "") {
-      return;
-    }
+  const [key, setKey] = useState(0);
 
-    const refValue = ref.current;
-    if (refValue) {
-      refValue.value = "";
+  const addAction = useCallback((value: unknown) => {
+    if (value === "" || !value) {
+      return;
     }
 
     const action = possibleActions.find((item) => item.id === value);
     if (!action) {
       return;
     }
+
+    setKey((locKey) => locKey + 1);
 
     setActionsWithConditions((oldActions) => {
       return [
@@ -38,18 +34,14 @@ export function AplActionNew() {
   }, []);
 
   return (
-    <Select
-      ref={ref}
-      placeholder="Select action"
-      onChange={addAction}
-      value={undefined}
-      pt={2}
-    >
-      {possibleActions.map((action) => (
-        <option key={action.id} value={action.id}>
-          {action.description}
-        </option>
-      ))}
-    </Select>
+    <Autocomplete
+      id="apl-action-new"
+      size="small"
+      key={key}
+      renderInput={(params) => <TextField {...params} label="Action" />}
+      onChange={(_, newValue) => addAction(newValue?.id)}
+      getOptionLabel={(option) => option.description}
+      options={possibleActions}
+    />
   );
 }

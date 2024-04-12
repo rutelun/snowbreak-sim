@@ -1,17 +1,9 @@
 import { useAplContext } from "~/app/context/AplContext";
 import { AplConditions } from "~/app/components/Apl/AplConditions";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  IconButton,
-  Text,
-} from "@chakra-ui/react";
 import { useCallback, useState } from "react";
-import { ArrowDownIcon, ArrowUpIcon, CloseIcon } from "@chakra-ui/icons";
 import { produce } from "immer";
-
+import { Box, Stack, Checkbox, Button, FormControlLabel } from "@mui/material";
+import { ArrowDownward, ArrowUpward, Close } from "@mui/icons-material";
 type Props = {
   actionId: number;
 };
@@ -67,52 +59,52 @@ export function AplActionWithConditions({ actionId }: Props) {
   }, [canMoveDown, actionId]);
 
   return (
-    <Box borderWidth={1} pl={2} pb={isConditionsVisible ? 2 : 0}>
-      <Flex justifyContent="space-between">
-        <Checkbox defaultChecked pt={1} pb={1}>
-          <Text size="md" textAlign="left">
-            {action.description}
-            {isConditionsVisible ? " when(all true)" : ""}
-          </Text>
-        </Checkbox>
-        <Box>
+    <Box
+      style={{
+        borderWidth: 1,
+        paddingLeft: 8,
+        paddingBottom: isConditionsVisible ? 8 : 0,
+      }}
+    >
+      <Stack
+        useFlexGap
+        justifyContent="space-between"
+        flexDirection="row"
+        alignItems="center"
+        gap={2}
+        sx={{ paddingRight: 1 }}
+      >
+        <FormControlLabel
+          control={<Checkbox defaultChecked />}
+          label={`${action.description}
+            ${isConditionsVisible ? " when(all true)" : ""}`}
+        />
+        <Box justifyContent="center" display="flex">
           <Button
-            size="sm"
-            rounded="inherit"
+            size="small"
+            variant="text"
             onClick={() => setIsConditionsVisible((val) => !val)}
           >
             {isConditionsVisible ? "Hide" : "Change"} conditions
           </Button>
-          <IconButton
+
+          <ArrowDownward
             onClick={moveDownItem}
-            disabled={!canMoveDown}
-            justifySelf="flex-end"
-            variant="ghost"
-            colorScheme={canMoveDown ? "green" : "gray"}
+            sx={{ color: canMoveDown ? "green" : "gray" }}
             aria-label="move down"
-            minWidth={6}
-            icon={<ArrowDownIcon boxSize={[5, 5]} />}
           />
-          <IconButton
+          <ArrowUpward
             onClick={moveUpItem}
-            disabled={!canMoveUp}
-            justifySelf="flex-end"
-            variant="ghost"
-            colorScheme={canMoveUp ? "green" : "gray"}
+            sx={{ color: canMoveUp ? "green" : "gray" }}
             aria-label="move up"
-            minWidth={6}
-            icon={<ArrowUpIcon boxSize={[5, 5]} />}
           />
-          <IconButton
+          <Close
             onClick={deleteItem}
-            justifySelf="flex-end"
-            variant="ghost"
-            colorScheme="red"
-            aria-label="remove condition"
-            icon={<CloseIcon />}
+            sx={{ color: "red" }}
+            aria-label="emove condition"
           />
         </Box>
-      </Flex>
+      </Stack>
       {isConditionsVisible ? <AplConditions actionId={actionId} /> : null}
     </Box>
   );
