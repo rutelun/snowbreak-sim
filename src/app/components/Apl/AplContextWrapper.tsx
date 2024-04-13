@@ -16,7 +16,7 @@ import type { FullCharInfo } from "~/app/components/Pickers/types";
 
 export const AplContextWrapper: FC<PropsWithChildren> = ({ children }) => {
   const [charsInfo, setCharsInfo] = useState<FullCharInfo[]>(() => {
-    if (!window) {
+    if (typeof window === "undefined") {
       return [];
     }
 
@@ -29,7 +29,9 @@ export const AplContextWrapper: FC<PropsWithChildren> = ({ children }) => {
   });
 
   useEffect(() => {
-    window.localStorage.setItem("charsInfo", JSON.stringify(charsInfo));
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("charsInfo", JSON.stringify(charsInfo));
+    }
   }, [charsInfo]);
 
   const possibleActions: AplActionUi[] = useMemo(
@@ -71,7 +73,7 @@ export const AplContextWrapper: FC<PropsWithChildren> = ({ children }) => {
   const [actionsWithConditions, setActionsWithConditions] = useState<
     AplActionWithConditionsUi[]
   >(() => {
-    if (!window) {
+    if (typeof window === "undefined") {
       return [];
     }
 
@@ -86,10 +88,12 @@ export const AplContextWrapper: FC<PropsWithChildren> = ({ children }) => {
   });
 
   useEffect(() => {
-    window.localStorage.setItem(
-      "actionsWithConditions",
-      JSON.stringify(actionsWithConditions),
-    );
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(
+        "actionsWithConditions",
+        JSON.stringify(actionsWithConditions),
+      );
+    }
   }, [actionsWithConditions]);
 
   const [prettifiedActions, setPrettifiedActions] = useState<
