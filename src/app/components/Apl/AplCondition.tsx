@@ -71,6 +71,16 @@ export function AplCondition({ actionId, conditionId }: Props) {
       }),
     );
   }, [actionId, conditionId, setActionsWithConditions]);
+  const toggleCondition = useCallback(
+    (enabled: boolean) => {
+      setActionsWithConditions((actions) =>
+        produce(actions, (draft) => {
+          draft[actionId].conditions[conditionId].enabled = enabled;
+        }),
+      );
+    },
+    [actionId, conditionId, setActionsWithConditions],
+  );
 
   return (
     <Box>
@@ -82,7 +92,12 @@ export function AplCondition({ actionId, conditionId }: Props) {
         }}
       >
         <FormControlLabel
-          control={<Checkbox defaultChecked />}
+          control={
+            <Checkbox
+              checked={item.enabled}
+              onChange={(e) => toggleCondition(e.target.checked)}
+            />
+          }
           label={`${item.description}`}
         />
         {item.type === "select" ? (

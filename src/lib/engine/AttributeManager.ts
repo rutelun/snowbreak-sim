@@ -35,13 +35,16 @@ export type TotalAttributeWithDistribution = {
 export class AttributeManager {
   public constructor(private engine: Engine) {}
 
-  public getAggregatorFormula(attr: Attribute): FormulaAggregator {
+  public getAggregatorFormula(
+    attr: Attribute,
+    loadout: boolean = false,
+  ): FormulaAggregator {
     if (inArray(FINAL_DAMAGE_ATTRIBUTES, attr)) {
       return {
         formula: new Formula({
           action: "*",
           parts: [],
-          description: attr,
+          description: loadout ? `loadout ${attr}` : attr,
           baseResult: 1,
           visibleAsPercent: true,
         }),
@@ -189,7 +192,7 @@ export class AttributeManager {
       }
     }
 
-    const formulaWithAdd = this.getAggregatorFormula(attr);
+    const formulaWithAdd = this.getAggregatorFormula(attr, true);
 
     formulaWithAdd.formula.parts.push(
       ...parts.map((part) => formulaWithAdd.getNewPart(part)),

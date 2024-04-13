@@ -12,7 +12,6 @@ export function AplActionNew() {
 
   const addAction = useCallback(
     (value: unknown) => {
-      debugger;
       if (value === "" || !value) {
         return;
       }

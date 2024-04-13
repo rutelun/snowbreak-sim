@@ -30,7 +30,11 @@ export function runApl({ expectedBattleTime, charsInfo, apl }: Props): Engine {
     possibleActions.map((item) => [item.id, item]),
   );
 
-  const engine = new Engine();
+  const engine = new Engine({
+    damage: {
+      alwaysHitWeakPoint: true,
+    },
+  });
   charsInfo.forEach((info) => {
     if (!info.char) {
       return;

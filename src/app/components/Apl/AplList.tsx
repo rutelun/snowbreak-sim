@@ -9,11 +9,11 @@ export function AplList() {
   return (
     <List>
       {actionsWithConditions.map((_item, index) => (
-        <ListItem key={index} sx={{ display: "block" }}>
+        <ListItem key={index} sx={{ display: "block", padding: 0 }}>
           <AplActionWithConditions actionId={index} />
         </ListItem>
       ))}
-      <ListItem key="new" sx={{ display: "block" }}>
+      <ListItem key="new" sx={{ display: "block", padding: 0 }}>
         <AplActionNew />
       </ListItem>
     </List>

@@ -58,11 +58,21 @@ export function AplActionWithConditions({ actionId }: Props) {
     );
   }, [setActionsWithConditions, actionId]);
 
+  const toggleItem = useCallback(
+    (enabled: boolean) => {
+      setActionsWithConditions((value) =>
+        produce(value, (draft) => {
+          draft[actionId].action.enabled = enabled;
+        }),
+      );
+    },
+    [setActionsWithConditions, actionId],
+  );
+
   return (
     <Box
       style={{
         borderWidth: 1,
-        paddingLeft: 8,
         paddingBottom: isConditionsVisible ? 8 : 0,
       }}
     >
@@ -72,10 +82,14 @@ export function AplActionWithConditions({ actionId }: Props) {
         flexDirection="row"
         alignItems="center"
         gap={2}
-        sx={{ paddingRight: 1 }}
       >
         <FormControlLabel
-          control={<Checkbox defaultChecked />}
+          control={
+            <Checkbox
+              checked={action.enabled}
+              onChange={(e) => toggleItem(e.target.checked)}
+            />
+          }
           label={`${action.description}
             ${isConditionsVisible ? " when(all true)" : ""}`}
         />
