@@ -82,6 +82,11 @@ export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
     clawMaxCapacity: number,
   ) {
     let actionId: ActionId | undefined = undefined;
+    if (this.ultimateModifier) {
+      this.engine.modifierManager.removeModifier(this.ultimateModifier.id);
+      this.ultimateModifier = undefined;
+    }
+
     this.ultimateModifier = this.engine.modifierManager.initializeModifier(
       this,
       {
@@ -135,7 +140,7 @@ export abstract class EatchelWithUltimateSkill extends EatchelWithSupportSkill {
     const clawMaxCapacity = this.getClawMaxCapacity();
 
     const currentEnergy = this.engine.uEnergyManager.getCurrent();
-    const scale = Math.max(currentEnergy / this.energyForUltimateMaxEffect, 1);
+    const scale = Math.min(currentEnergy / this.energyForUltimateMaxEffect, 1);
 
     let accumulatedDmg = 0;
 
